@@ -1,0 +1,5 @@
+# Print nice colors
+fabric==1.6.1
+
+# Plugins
+meliae==0.4.0
