@@ -6,7 +6,12 @@ from wpamod.plugins.base.analysis_plugin import AnalysisPlugin
 
 
 class MeliaeBasic(AnalysisPlugin):
+    """
+    Basic analysis of memory dumps with meliae
 
+    http://jam-bazaar.blogspot.com.ar/2010/08/step-by-step-meliae.html
+    http://jam-bazaar.blogspot.com.ar/2009/11/memory-debugging-with-meliae.html
+    """
     def analyze(self):
         memory_over_time = []
 
