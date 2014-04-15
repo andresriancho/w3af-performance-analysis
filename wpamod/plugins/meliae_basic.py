@@ -1,8 +1,7 @@
 import logging
 
-from meliae import loader
-
 from wpamod.plugins.base.analysis_plugin import AnalysisPlugin
+from wpamod.utils.load_meliae import load_meliae
 
 
 class MeliaeBasic(AnalysisPlugin):
@@ -18,8 +17,7 @@ class MeliaeBasic(AnalysisPlugin):
         for i, memdump in enumerate(self.get_input_files('*.memory')):
             logging.debug('Analyzing "%s" memory dump' % memdump)
 
-            om = loader.load(memdump)
-            om.remove_expensive_references()
+            om = load_meliae(memdump)
             summary = om.summarize()
             total_memory = '%.1fMiB' % (summary.total_size / 1024. / 1024)
 

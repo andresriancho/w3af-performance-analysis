@@ -3,9 +3,10 @@ import argparse
 
 from wpamod.utils.show_results import show_result
 from wpamod.plugins.meliae_basic import MeliaeBasic
+from wpamod.plugins.meliae_usage_summary import MeliaeUsageSummary
 from wpamod.utils.log import configure_logging
 
-PLUGINS = {MeliaeBasic}
+PLUGINS = {MeliaeBasic, MeliaeUsageSummary}
 
 
 def main():
