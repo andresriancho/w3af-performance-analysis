@@ -7,7 +7,7 @@ from wpamod.plugins.meliae_usage_summary import MeliaeUsageSummary
 from wpamod.plugins.sys_info import SystemInformation
 from wpamod.utils.log import configure_logging
 
-PLUGINS = {SystemInformation}
+PLUGINS = {MeliaeBasic, MeliaeUsageSummary, SystemInformation}
 
 
 def main():
