@@ -8,4 +8,6 @@ class AnalysisPlugin(object):
 
     def get_input_files(self, mask):
         glob_path = os.path.join(self.input_directory, mask)
-        return glob.glob(glob_path)
+        files = glob.glob(glob_path)
+        files.sort()
+        return files

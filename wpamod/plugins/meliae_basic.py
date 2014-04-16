@@ -17,7 +17,11 @@ class MeliaeBasic(AnalysisPlugin):
         for i, memdump in enumerate(self.get_input_files('*.memory')):
             logging.debug('Analyzing "%s" memory dump' % memdump)
 
-            om = load_meliae(memdump)
+            try:
+                om = load_meliae(memdump)
+            except KeyError, ke:
+                logging.error('Failed to load "%s": %s' % (memdump, ke))
+
             summary = om.summarize()
             total_memory = '%.1fMiB' % (summary.total_size / 1024. / 1024)
 
