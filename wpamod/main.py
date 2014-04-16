@@ -6,10 +6,11 @@ from wpamod.plugins.meliae_basic import MeliaeBasic
 from wpamod.plugins.meliae_usage_summary import MeliaeUsageSummary
 from wpamod.plugins.sys_info import SystemInformation
 from wpamod.plugins.cpu_usage import CPUUsageByFunction
+from wpamod.plugins.core_status import CoreStatus
 from wpamod.utils.log import configure_logging
 
-PLUGINS = {MeliaeBasic, MeliaeUsageSummary, SystemInformation,
-           CPUUsageByFunction}
+PLUGINS = [MeliaeBasic, MeliaeUsageSummary, SystemInformation,
+           CPUUsageByFunction, CoreStatus]
 
 
 def main():
