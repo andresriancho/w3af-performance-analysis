@@ -14,6 +14,9 @@ class MeliaeUsageSummary(AnalysisPlugin):
         memory_summaries = []
 
         input_files = self.get_input_files('*.memory')
+        if len(input_files) <= 1:
+            return []
+
         first_mem_dump = input_files[0]
         before_last_mem_dump = input_files[-2]
         tasks = (('First', first_mem_dump),
