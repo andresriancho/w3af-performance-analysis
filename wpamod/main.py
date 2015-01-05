@@ -6,11 +6,21 @@ from wpamod.plugins.meliae_basic import MeliaeBasic
 from wpamod.plugins.meliae_usage_summary import MeliaeUsageSummary
 from wpamod.plugins.sys_info import SystemInformation
 from wpamod.plugins.cpu_usage import CPUUsageByFunction
+from wpamod.plugins.runsnake_helper import CPUUsageGUIShortcut, MemoryUsageGUIShortcut
 from wpamod.plugins.core_status import CoreStatus
 from wpamod.utils.log import configure_logging
 
-PLUGINS = [MeliaeBasic, MeliaeUsageSummary, SystemInformation,
-           CPUUsageByFunction, CoreStatus]
+# Leave the plugins list in this format so it's easier to comment the plugins
+# we don't need during development/testing
+PLUGINS = [
+           MeliaeBasic,
+           MeliaeUsageSummary,
+           SystemInformation,
+           CPUUsageByFunction,
+           CoreStatus,
+           CPUUsageGUIShortcut,
+           MemoryUsageGUIShortcut
+]
 
 
 def main():
