@@ -7,6 +7,7 @@ from wpamod.plugins.meliae_usage_summary import MeliaeUsageSummary
 from wpamod.plugins.sys_info import SystemInformation
 from wpamod.plugins.cpu_usage import CPUUsageByFunction
 from wpamod.plugins.runsnake_helper import CPUUsageGUIShortcut, MemoryUsageGUIShortcut
+from wpamod.plugins.psutil_summary import PSUtilSummary
 from wpamod.plugins.core_status import CoreStatus
 from wpamod.utils.log import configure_logging
 
@@ -19,7 +20,8 @@ PLUGINS = [
            CPUUsageByFunction,
            CoreStatus,
            CPUUsageGUIShortcut,
-           MemoryUsageGUIShortcut
+           MemoryUsageGUIShortcut,
+           PSUtilSummary
 ]
 
 
