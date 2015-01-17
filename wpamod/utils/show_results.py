@@ -60,7 +60,7 @@ def show_result(title, result, level=0):
         else:
             msg = 'Unknown type for "%s" as value for "%s"'
             raise TypeError(msg % (value, key))
-            
+
             
 def _should_recurse(values):
     try:

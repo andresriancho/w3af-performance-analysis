@@ -33,13 +33,27 @@ def main():
 
     output = []
 
-    for plugin_klass in PLUGINS:
+    for plugin_klass in filter_enabled_plugins(args):
         plugin_inst = plugin_klass(args.idirectory)
         new_output = plugin_inst.analyze()
         name = plugin_inst.get_output_name()
         output.append((name, new_output))
 
     show_result('Performance analysis', tuple(output))
+
+
+def filter_enabled_plugins(args):
+    plugins = []
+
+    for i, klass in enumerate(PLUGINS):
+        if args.__dict__[str(i)]:
+            logging.debug('Enabling %s' % klass.__name__)
+            plugins.append(klass)
+
+    if not plugins:
+        plugins.extend(PLUGINS)
+
+    return plugins
 
 
 def parse_args():
@@ -49,5 +63,10 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Analyze performance statistics')
     parser.add_argument('idirectory', help='Input directory')
     parser.add_argument('--debug', action='store_true', help='Print debugging information')
+
+    for i, klass in enumerate(PLUGINS):
+        parser.add_argument('-%s' % i, action='store_true',
+                            help='Enable %s' % klass.__name__)
+
     args = parser.parse_args()
     return args

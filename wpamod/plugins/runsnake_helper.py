@@ -11,7 +11,6 @@ class CPUUsageGUIShortcut(AnalysisPlugin):
         for i, cpudump in enumerate(self.get_input_files('*.cpu')):
             output.append('runsnake %s' % cpudump)
 
-        output.append('')
         return output
 
     def get_output_name(self):
@@ -28,7 +27,6 @@ class MemoryUsageGUIShortcut(AnalysisPlugin):
         for i, cpudump in enumerate(self.get_input_files('*.memory')):
             output.append('runsnakemem %s' % cpudump)
 
-        output.append('')
         return output
 
     def get_output_name(self):
