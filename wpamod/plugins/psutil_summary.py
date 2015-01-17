@@ -1,5 +1,6 @@
 import logging
 import json
+import humanize
 
 from wpamod.plugins.base.analysis_plugin import AnalysisPlugin
 
@@ -36,9 +37,22 @@ class PSUtilSummary(AnalysisPlugin):
 
         for pid, data in processes.iteritems():
             if self._is_w3af(data):
+                target = self._get_process_target(pid)
+                pid_target = '%s - %s' % (pid, target)
+
                 usage = float(data['memory_percent'])
-                data = '%0.2f%% - %s' % (usage, self._get_process_target(pid))
-                memory_usage.append((pid, data))
+                usage = '%0.2f %%' % usage
+
+                shared = humanize.naturalsize(data['memory_info_ex']['shared'])
+
+                rss = humanize.naturalsize(data['memory_info_ex']['rss'])
+
+                process_data = []
+                process_data.append(('RSS (total)', rss))
+                process_data.append(('Shared', shared))
+                process_data.append(('Percent OS used', usage))
+
+                memory_usage.append((pid_target, process_data))
 
         output.append((count, memory_usage))
 
@@ -56,6 +70,9 @@ class PSUtilSummary(AnalysisPlugin):
         return '(unknown)'
 
     def _is_w3af(self, data):
+        if data['exe'] is None:
+            return False
+
         return 'python' in data['exe']
 
     def get_output_name(self):
