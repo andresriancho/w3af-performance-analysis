@@ -17,7 +17,12 @@ class SystemInformation(AnalysisPlugin):
         psutil_file = os.path.join(self.input_directory, 'w3af-psutil.data')
         logging.debug('Analyzing "%s" psutil dump' % psutil_file)
 
-        psutil_data = json.load(file(psutil_file))
+        try:
+            psutil_data = json.load(file(psutil_file))
+        except IOError:
+            logging.error('File not found: "%s"' % psutil_file)
+            return []
+
         data = self.format_data(psutil_data)
         return data
 
