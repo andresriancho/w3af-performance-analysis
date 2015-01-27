@@ -1,5 +1,6 @@
 import os
 import glob
+import logging
 
 
 class AnalysisPlugin(object):
@@ -12,9 +13,16 @@ class AnalysisPlugin(object):
         files = glob.glob(glob_path)
         files.sort()
 
+        filter_accepted = []
+
         for file_name in files:
             if 'w3af-' in file_name:
-                if not file_name.startswith('w3af-%s' % self.pid):
-                    files.remove(file_name)
 
-        return files
+                pid_start = 'w3af-%s' % self.pid
+                if pid_start not in file_name:
+                    logging.debug('Ignoring file %s' % file_name)
+                else:
+                    logging.debug('Filter accepted file %s' % file_name)
+                    filter_accepted.append(file_name)
+
+        return filter_accepted
