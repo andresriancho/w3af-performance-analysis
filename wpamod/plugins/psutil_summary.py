@@ -44,15 +44,22 @@ class PSUtilSummary(AnalysisPlugin):
                 usage = '%0.2f %%' % usage
 
                 shared = humanize.naturalsize(data['memory_info_ex']['shared'])
-
                 rss = humanize.naturalsize(data['memory_info_ex']['rss'])
 
-                process_data = []
-                process_data.append(('RSS (total)', rss))
-                process_data.append(('Shared', shared))
-                process_data.append(('Percent OS used', usage))
+                process_data = [('rss', rss),
+                                ('shared', shared),
+                                ('Percent OS used', usage)]
 
                 memory_usage.append((pid_target, process_data))
+
+        for key, value in psutil_data['ps_mem'][0].items():
+            try:
+                psutil_data['ps_mem'][0][key] = humanize.naturalsize(value * 1024)
+            except:
+                continue
+
+        memory_usage.append(('Program memory by psmem',
+                             psutil_data['ps_mem'][0].items()))
 
         output.append((count, memory_usage))
 
@@ -77,4 +84,3 @@ class PSUtilSummary(AnalysisPlugin):
 
     def get_output_name(self):
         return 'PSUtils memory usage summary'
-
