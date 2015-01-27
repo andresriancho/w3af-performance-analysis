@@ -1,8 +1,12 @@
 import os
 import pstats
 import logging
+import fnmatch
 
 from wpamod.plugins.base.analysis_plugin import AnalysisPlugin
+
+BLACKLIST = ['*/profiling/*', '*meliae*', '*pstats.py']
+MAX_FUNC = 15
 
 
 class CPUUsageByFunction(AnalysisPlugin):
@@ -17,11 +21,22 @@ class CPUUsageByFunction(AnalysisPlugin):
             cpu_functions = []
 
             p = pstats.Stats(cpudump)
-            s = p.strip_dirs().sort_stats('cumulative').get_print_list((20,))[1]
+            print_list = p.sort_stats('cumulative').get_print_list((200,))[1]
+            current = 1
 
-            for j, (filename, lineno, function) in enumerate(s):
-                where = '%s:%s(%s)' % (filename, lineno, function)
-                cpu_functions.append((j, where))
+            for filename, lineno, function in print_list:
+
+                for blacklist_pattern in BLACKLIST:
+                    if fnmatch.fnmatch(filename, blacklist_pattern):
+                        break
+                else:
+                    where = '%s:%s (%s)' % (os.path.basename(filename),
+                                            lineno, function)
+                    cpu_functions.append((current, where))
+                    current += 1
+
+                if current == (MAX_FUNC + 1):
+                    break
 
             dumpfname = os.path.split(cpudump)[1]
             output.append(('Measurement #%s (%s)' % (i, dumpfname),
