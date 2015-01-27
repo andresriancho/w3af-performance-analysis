@@ -27,6 +27,11 @@ class MeliaeUsageSummary(AnalysisPlugin):
             logging.debug('Analyzing "%s" memory dump' % memdump)
 
             om = load_meliae(memdump)
+
+            if om is None:
+                logging.error('Failed to load "%s"' % memdump)
+                continue
+
             summary = repr(om.summarize())
             summary = summary.replace('\n', '\n%s' % spaces)
             summary = ('\n%s' % spaces) + summary

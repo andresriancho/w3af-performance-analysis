@@ -17,15 +17,19 @@ class MeliaeBasic(AnalysisPlugin):
         for i, memdump in enumerate(self.get_input_files('*.memory')):
             logging.debug('Analyzing "%s" memory dump' % memdump)
 
+            om = load_meliae(memdump)
+
+            if om is None:
+                logging.error('Failed to load "%s"' % memdump)
+                continue
+
             try:
-                om = load_meliae(memdump)
-            except KeyError, ke:
-                logging.error('Failed to load "%s": %s' % (memdump, ke))
-
-            summary = om.summarize()
-            total_memory = '%.1fMiB' % (summary.total_size / 1024. / 1024)
-
-            memory_over_time.append((i, total_memory))
+                summary = om.summarize()
+            except:
+                logging.error('Failed to summarize "%s"' % memdump)
+            else:
+                total_memory = '%.1fMiB' % (summary.total_size / 1024. / 1024)
+                memory_over_time.append((i, total_memory))
 
         return memory_over_time
 
