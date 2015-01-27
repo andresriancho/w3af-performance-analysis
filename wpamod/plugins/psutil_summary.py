@@ -61,7 +61,7 @@ class PSUtilSummary(AnalysisPlugin):
         memory_usage.append(('Program memory by psmem',
                              psutil_data['ps_mem'][0].items()))
 
-        output.append((count, memory_usage))
+        output.append(('Measurement #%s' % count, memory_usage))
 
     def _get_process_target(self, pid):
         input_files = self.get_input_files('*.processes')

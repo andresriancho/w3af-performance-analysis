@@ -64,11 +64,11 @@ def format_tracebacks(snapshot, limit=3):
 
         key = "%s memory blocks: %.1f KiB" % (stat.count, stat.size / 1024)
 
-        value = []
+        value = ''
         for line in stat.traceback.format():
-            value.append(line)
+            value += line + '\n'
 
-        output.append((key, value))
+        output.append((key, [value]))
 
     return output
 
@@ -80,7 +80,6 @@ def format_top(snapshot, group_by='lineno', limit=15):
     top_stats = snapshot.statistics(group_by)
 
     lines = []
-    output = [("Top %s lines" % limit, lines)]
 
     for index, stat in enumerate(top_stats[:limit], 1):
         frame = stat.traceback[0]
@@ -102,5 +101,5 @@ def format_top(snapshot, group_by='lineno', limit=15):
     total = sum(stat.size for stat in top_stats)
     lines.append(("Total allocated size", "%.1f KiB" % (total / 1024)))
 
-    return output
+    return lines
 

@@ -74,7 +74,12 @@ def _should_recurse(values):
 def _make_printable(data, level):
     color = COLORS.get(level, lambda x: x)
     colored_key = color(data)
-    
     spaces = ' ' * level * INDENT_LEN
-    to_print = '%s%s' % (spaces, colored_key)
+
+    if '\n' in colored_key:
+        colored_key = colored_key.replace('\n', '\n%s' % spaces)
+        to_print = '\n%s%s' % (spaces, colored_key)
+    else:
+        to_print = '%s%s' % (spaces, colored_key)
+
     return to_print
