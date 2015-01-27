@@ -5,11 +5,9 @@ import types
 from fabric.colors import green, blue, yellow, red
 
 INDENT_LEN = 4
-COLORS = {
-          0: green,
+COLORS = {0: green,
           1: blue,
-          2: yellow,
-          }
+          2: yellow}
 
 
 def show_result(title, result, level=0):
