@@ -9,6 +9,7 @@ from wpamod.plugins.cpu_usage import CPUUsageByFunction
 from wpamod.plugins.runsnake_helper import CPUUsageGUIShortcut, MemoryUsageGUIShortcut
 from wpamod.plugins.psutil_summary import PSUtilSummary
 from wpamod.plugins.core_status import CoreStatus
+from wpamod.plugins.pytracemalloc import PyTraceMallocSummary
 from wpamod.utils.log import configure_logging
 
 # Leave the plugins list in this format so it's easier to comment the plugins
@@ -21,7 +22,8 @@ PLUGINS = [
            CoreStatus,
            CPUUsageGUIShortcut,
            MemoryUsageGUIShortcut,
-           PSUtilSummary
+           PSUtilSummary,
+           PyTraceMallocSummary
 ]
 
 
