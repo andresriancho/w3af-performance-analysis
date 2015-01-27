@@ -1,6 +1,5 @@
 import os
 import logging
-import tracemalloc
 
 from tracemalloc import Snapshot, Filter
 
@@ -19,11 +18,16 @@ class PyTraceMallocSummary(AnalysisPlugin):
 
             try:
                 snapshot = Snapshot.load(tracedump)
-                top = format_top(snapshot)
+                snapshot = filter_traces(snapshot)
             except Exception, e:
                 logging.error('Exception in PyTraceMallocSummary: "%s"' % e)
-            else:
-                output.append(('Measurement #%s' % i, top))
+                continue
+
+            top = format_top(snapshot)
+            output.append(('Measurement #%s' % i, top))
+
+            trace = format_tracebacks(snapshot)
+            output.append(('Traceback #%s' % i, trace))
 
             #break
 
@@ -33,7 +37,7 @@ class PyTraceMallocSummary(AnalysisPlugin):
         return 'Top 15 lines of code where memory is allocated'
 
 
-def format_top(snapshot, group_by='lineno', limit=15):
+def filter_traces(snapshot):
     snapshot = snapshot.filter_traces((
         # Some default ignores
         Filter(False, "<frozen importlib._bootstrap>"),
@@ -43,7 +47,36 @@ def format_top(snapshot, group_by='lineno', limit=15):
         Filter(False, "*tracemalloc*"),
         Filter(False, "*yappi*"),
         Filter(False, "*meliae*"),
+        Filter(False, "*controllers/profiling*"),
     ))
+    return snapshot
+
+
+def format_tracebacks(snapshot, limit=3):
+    """
+    :return: Tracebacks for malloc
+    """
+    output = []
+    top_stats = snapshot.statistics('traceback')
+
+    for i in xrange(min(limit, len(top_stats))):
+        stat = top_stats[i]
+
+        key = "%s memory blocks: %.1f KiB" % (stat.count, stat.size / 1024)
+
+        value = []
+        for line in stat.traceback.format():
+            value.append(line)
+
+        output.append((key, value))
+
+    return output
+
+
+def format_top(snapshot, group_by='lineno', limit=15):
+    """
+    :return: A list of top N lines based on how much they malloc
+    """
     top_stats = snapshot.statistics(group_by)
 
     lines = []
