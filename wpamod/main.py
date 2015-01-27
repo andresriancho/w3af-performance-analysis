@@ -36,7 +36,7 @@ def main():
     output = []
 
     for plugin_klass in filter_enabled_plugins(args):
-        plugin_inst = plugin_klass(args.idirectory)
+        plugin_inst = plugin_klass(args.directory, args.pid)
         new_output = plugin_inst.analyze()
         name = plugin_inst.get_output_name()
         output.append((name, new_output))
@@ -63,7 +63,8 @@ def parse_args():
     return: A tuple with config_file, version.
     """
     parser = argparse.ArgumentParser(description='Analyze performance statistics')
-    parser.add_argument('idirectory', help='Input directory')
+    parser.add_argument('directory', help='Input directory')
+    parser.add_argument('pid', help='Input directory')
     parser.add_argument('--debug', action='store_true', help='Print debugging information')
 
     for i, klass in enumerate(PLUGINS):
