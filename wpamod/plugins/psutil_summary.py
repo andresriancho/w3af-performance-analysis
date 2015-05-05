@@ -22,11 +22,13 @@ class PSUtilSummary(AnalysisPlugin):
             except:
                 logging.debug('Failed to load JSON from %s' % input_file)
             else:
-                self._process_psutil_memory_data(i, psutil_data, output)
+                self._process_psutil_memory_data(i, psutil_data, output,
+                                                 input_file)
 
         return output
 
-    def _process_psutil_memory_data(self, count, psutil_data, output):
+    def _process_psutil_memory_data(self, count, psutil_data, output,
+                                    input_file):
         """
         :param psutil_data: A dict containing the data
         :param output: A list with our parsed output
@@ -52,14 +54,17 @@ class PSUtilSummary(AnalysisPlugin):
 
                 memory_usage.append((pid_target, process_data))
 
-        for key, value in psutil_data['ps_mem'][0].items():
-            try:
-                psutil_data['ps_mem'][0][key] = humanize.naturalsize(value * 1024)
-            except:
-                continue
+        if not psutil_data['ps_mem']:
+            logging.warning('No ps_mem dump in "%s"' % input_file)
+        else:
+            for key, value in psutil_data['ps_mem'][0].items():
+                try:
+                    psutil_data['ps_mem'][0][key] = humanize.naturalsize(value * 1024)
+                except:
+                    continue
 
-        memory_usage.append(('Program memory by psmem',
-                             psutil_data['ps_mem'][0].items()))
+            memory_usage.append(('Program memory by psmem',
+                                 psutil_data['ps_mem'][0].items()))
 
         output.append(('Measurement #%s' % count, memory_usage))
 

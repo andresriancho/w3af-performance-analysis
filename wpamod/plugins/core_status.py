@@ -11,6 +11,7 @@ class CoreStatus(AnalysisPlugin):
                  'Crawl queue output speed', 'Crawl queue size',
                  'Audit queue input speed', 'Audit queue output speed',
                  'Audit queue size'}
+    CACHE_STATS = 'Cache stats'
 
     def analyze(self):
         """
@@ -30,11 +31,18 @@ class CoreStatus(AnalysisPlugin):
             logging.debug('Analyzing "%s" core status dump' % core_dump)
 
             core_stat_json = json.load(file(core_dump))
-            core_stats = core_stat_json.items()
+
+            if self.CACHE_STATS in core_stat_json:
+                cache_stats = core_stat_json.pop(self.CACHE_STATS)
+                core_stats_items = core_stat_json.items()
+                core_stats_items.append((self.CACHE_STATS, tuple(cache_stats.items())))
+            else:
+                core_stats_items = core_stat_json.items()
+
+            core_stats = tuple(core_stats_items)
 
             dumpfname = os.path.split(core_dump)[1]
-            output.append(('Measurement #%s (%s)' % (i, dumpfname),
-                           tuple(core_stats)))
+            output.append(('Measurement #%s (%s)' % (i, dumpfname), core_stats))
 
         return output
 
