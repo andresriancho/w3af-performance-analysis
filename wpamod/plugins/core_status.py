@@ -39,7 +39,8 @@ class CoreStatus(AnalysisPlugin):
             else:
                 core_stats_items = core_stat_json.items()
 
-            core_stats = tuple(core_stats_items)
+            core_stats = list(core_stats_items)
+            core_stats.sort()
 
             dumpfname = os.path.split(core_dump)[1]
             output.append(('Measurement #%s (%s)' % (i, dumpfname), core_stats))
