@@ -11,6 +11,7 @@ from wpamod.plugins.runsnake_helper import CPUUsageGUIShortcut, MemoryUsageGUISh
 from wpamod.plugins.psutil_summary import PSUtilSummary
 from wpamod.plugins.core_status import CoreStatus
 from wpamod.plugins.pytracemalloc import PyTraceMallocSummary
+from wpamod.plugins.request_count import HTTPRequestCount
 from wpamod.utils.log import configure_logging
 
 # Leave the plugins list in this format so it's easier to comment the plugins
@@ -19,13 +20,14 @@ PLUGINS = [
            MeliaeBasic,
            MeliaeUsageSummary,
            MeliaeLargestObject,
-           SystemInformation,
            CPUUsageByFunction,
            CoreStatus,
            CPUUsageGUIShortcut,
            MemoryUsageGUIShortcut,
            PSUtilSummary,
            PyTraceMallocSummary,
+           SystemInformation,
+           HTTPRequestCount,
 ]
 
 
