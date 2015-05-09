@@ -1,5 +1,6 @@
 import logging
 import argparse
+import sys
 
 from wpamod.utils.show_results import show_result
 from wpamod.plugins.meliae_basic import MeliaeBasic
@@ -14,6 +15,7 @@ from wpamod.plugins.pytracemalloc import PyTraceMallocSummary
 from wpamod.plugins.request_count import HTTPRequestCount
 from wpamod.plugins.log_parser import LogParser
 from wpamod.utils.log import configure_logging
+from wpamod.utils.is_valid_pid import is_valid_pid
 
 # Leave the plugins list in this format so it's easier to comment the plugins
 # we don't need during development/testing
@@ -40,6 +42,9 @@ def main():
     logging.debug('Starting performance analysis')
 
     output = []
+
+    if not is_valid_pid(args.directory, args.pid):
+        sys.exit(-1)
 
     for plugin_klass in filter_enabled_plugins(args):
         plugin_inst = plugin_klass(args.directory, args.pid)

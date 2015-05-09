@@ -10,10 +10,8 @@ Rather complex since we need a patched Python for pytracemalloc:
 ```bash
 cd ~/tools/
 git clone https://github.com/andresriancho/w3af-performance-analysis.git
-cd w3af-performance-analysis
-sudo apt-get update
-sudo apt-get install cython
 
+cd /tmp/
 wget http://www.python.org/ftp/python/2.7.8/Python-2.7.8.tgz
 wget https://pypi.python.org/packages/source/p/pytracemalloc/pytracemalloc-1.2.tar.gz
 tar -xf Python-2.7.8.tgz
@@ -21,9 +19,9 @@ tar -xf pytracemalloc-1.2.tar.gz
 cd Python-2.7.8
 patch -p1 < ../pytracemalloc-1.2/patches/2.7/pep445.patch
 ./configure --enable-unicode=ucs4 --prefix=/opt/tracemalloc/py27
-make install
+sudo make install
 cd ../pytracemalloc-1.2
-/opt/tracemalloc/py27/bin/python2.7 setup.py install
+sudo /opt/tracemalloc/py27/bin/python2.7 setup.py install
 
 cd ~/tools/virtualenvs/
 virtualenv --python=/opt/tracemalloc/py27/bin/python2.7 w3af-performance-analysis
