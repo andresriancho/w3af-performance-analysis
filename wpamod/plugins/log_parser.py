@@ -34,7 +34,7 @@ class LogParser(AnalysisPlugin):
                 if log_type in log_type_count:
                     log_type_count[log_type] += 1
                 else:
-                    log_type_count[log_type] = 0
+                    log_type_count[log_type] = 1
 
         result = log_type_count.items()
         result.sort(sort_second)
