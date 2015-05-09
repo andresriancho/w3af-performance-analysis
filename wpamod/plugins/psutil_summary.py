@@ -79,7 +79,7 @@ class PSUtilSummary(AnalysisPlugin):
                 if pid in process_data:
                     return process_data[pid]['name'] + '.' + process_data[pid]['target']
 
-        return '(unknown)'
+        return '(unknown subprocess target function)'
 
     def _is_w3af(self, data):
         if data['exe'] is None:
