@@ -15,6 +15,7 @@ from wpamod.plugins.pytracemalloc import PyTraceMallocSummary
 from wpamod.plugins.request_count import HTTPRequestCount
 from wpamod.plugins.log_parser import LogParser
 from wpamod.utils.log import configure_logging
+from wpamod.utils.cache import save_cache, clear_cache, get_from_cache
 from wpamod.utils.is_valid_pid import is_valid_pid
 
 # Leave the plugins list in this format so it's easier to comment the plugins
@@ -43,15 +44,25 @@ def main():
 
     output = []
 
+    if args.clear_cache:
+        clear_cache(args.directory)
+
     if not is_valid_pid(args.directory, args.pid):
         sys.exit(-1)
 
     for plugin_klass in filter_enabled_plugins(args):
         plugin_inst = plugin_klass(args.directory, args.pid)
-        new_output = plugin_inst.analyze()
         name = plugin_inst.get_output_name()
-        output.append((name, new_output))
 
+        cache_data = get_from_cache(args.directory, args.pid, name)
+
+        if cache_data is None:
+            new_output = plugin_inst.analyze()
+            output.append((name, new_output))
+        else:
+            output.append((name, cache_data))
+
+    save_cache(args.directory, args.pid, output)
     show_result('Performance analysis', tuple(output))
 
 
@@ -73,10 +84,13 @@ def parse_args():
     """
     return: A tuple with config_file, version.
     """
-    parser = argparse.ArgumentParser(description='Analyze performance statistics')
+    parser = argparse.ArgumentParser(description='Analyze w3af performance data')
     parser.add_argument('directory', help='Input directory')
     parser.add_argument('pid', help='Input directory')
-    parser.add_argument('--debug', action='store_true', help='Print debugging information')
+    parser.add_argument('--debug', action='store_true',
+                        help='Print debugging information')
+    parser.add_argument('--clear-cache', action='store_true',
+                        help='Clear analysis cache for specified path')
 
     for i, klass in enumerate(PLUGINS):
         parser.add_argument('-%s' % i, action='store_true',
