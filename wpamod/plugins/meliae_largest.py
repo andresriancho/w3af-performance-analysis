@@ -14,7 +14,9 @@ class MeliaeLargestObject(AnalysisPlugin):
 
         for i, memdump in enumerate(self.get_input_files('*.memory')):
 
-            logging.debug('Analyzing largest objects in "%s" memory dump' % memdump)
+            msg = ('Analyzing largest objects in "%s" memory dump. This'
+                   ' operation might take some minutes to complete')
+            logging.debug(msg % memdump)
 
             om = load_meliae(memdump)
 
