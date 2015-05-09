@@ -25,7 +25,7 @@ def show_result(title, result, level=0):
         print()
         
     if not result:
-        print('No results to show.')
+        _make_printable('No results to show.', level)
         print()
         return
 
@@ -51,13 +51,13 @@ def show_result(title, result, level=0):
                 # Print none when there are no items in the list.
                 print(_make_printable('None', level+1))
             
-        elif isinstance(value, (basestring, int, float, types.NoneType)):
+        elif isinstance(value, (basestring, long, int, float, types.NoneType)):
             print(_make_printable('%s: ' % key, level), end='')
             print(value)
             
         else:
-            msg = 'Unknown type for "%s" as value for "%s"'
-            raise TypeError(msg % (value, key))
+            msg = 'Unknown type (%s) for "%s" as value for "%s"'
+            raise TypeError(msg % (type(value), value, key))
 
             
 def _should_recurse(values):
