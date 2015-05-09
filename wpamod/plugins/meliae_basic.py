@@ -1,6 +1,6 @@
 import logging
 
-from wpamod.meliae_analysis import load_meliae
+from wpamod.meliae_analysis.load_meliae import load_meliae
 from wpamod.plugins.base.analysis_plugin import AnalysisPlugin
 
 
