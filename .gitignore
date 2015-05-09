@@ -53,3 +53,6 @@ coverage.xml
 docs/_build/
 
 .idea/
+
+# Data we get from collector
+data/
