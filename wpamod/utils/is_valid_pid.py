@@ -23,7 +23,7 @@ def is_valid_pid(directory, query_pid):
     all_pids = list(all_pids)
     all_pids.sort()
     all_pids = [str(i) for i in all_pids]
-    
+
 
     if query_pid in all_pids:
         return True
