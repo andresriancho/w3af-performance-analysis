@@ -34,4 +34,4 @@ class MeliaeBasic(AnalysisPlugin):
         return memory_over_time
 
     def get_output_name(self):
-        return 'Total memory size'
+        return 'Total memory referenced by Python GC'
