@@ -1,6 +1,7 @@
+DEFAULT_TYPES_IGNORE = ('frame', )
 
 
-def largest_object(meliae_memory, top=20):
+def largest_object(meliae_memory, top=20, ignore_types=DEFAULT_TYPES_IGNORE):
     """
     This function returns a list of the top N objects which reference more
     memory. Meliae provides great features which output something like:
@@ -21,6 +22,12 @@ def largest_object(meliae_memory, top=20):
     all_objs = []
 
     for obj in meliae_memory.objs.itervalues():
+
+        # I don't care if a frame references a big variable, that's fine, frames
+        # are not persistent
+        if obj.type_str in ignore_types:
+            continue
+
         meliae_memory.compute_total_size(obj)
         all_objs.append(obj)
 
