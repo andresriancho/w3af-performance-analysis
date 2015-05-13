@@ -57,12 +57,12 @@ def main():
         cache_data = get_from_cache(args.directory, args.pid, name)
 
         if cache_data is None:
-            new_output = plugin_inst.analyze()
-            output.append((name, new_output))
+            plugin_output = plugin_inst.analyze()
+            save_cache(args.directory, args.pid, name, plugin_output)
+            output.append((name, plugin_output))
         else:
             output.append((name, cache_data))
 
-    save_cache(args.directory, args.pid, output)
     show_result('Performance analysis', tuple(output))
 
 

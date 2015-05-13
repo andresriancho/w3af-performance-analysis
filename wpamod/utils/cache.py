@@ -11,7 +11,7 @@ def clear_cache(directory):
         os.unlink(cache_file)
 
 
-def save_cache(directory, pid, data):
+def save_cache(directory, pid, section, plugin_output):
     logging.debug('Saving data to cache')
     cache_file = os.path.join(directory, CACHE_FILE)
 
@@ -22,7 +22,10 @@ def save_cache(directory, pid, data):
         saved_data = {}
 
     # Now we save the new data
-    saved_data[pid] = data
+    if pid not in saved_data:
+        saved_data[pid] = {}
+        
+    saved_data[pid][section] = plugin_output
     cPickle.dump(saved_data, file(cache_file, 'w'))
 
 
@@ -38,12 +41,13 @@ def get_from_cache(directory, pid, section):
         logging.debug('Invalid JSON in cache')
         return None
 
-    data = data[pid]
+    if pid not in data:
+        logging.debug('No cache found for PID: "%s"' % pid)
+        return None
 
-    for i_section, section_data in data:
-        if section == i_section:
-            logging.debug('Getting section "%s" from cache' % section)
-            return section_data
+    if section not in data[pid]:
+        logging.debug('No cache found for section: "%s"' % section)
+        return None
 
-    logging.debug('No cache found for section: "%s"' % section)
-    return None
+    logging.debug('Getting section: "%s" from cache' % section)
+    return data[pid][section]
