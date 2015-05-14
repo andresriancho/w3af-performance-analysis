@@ -54,14 +54,16 @@ def main():
         plugin_inst = plugin_klass(args.directory, args.pid)
         name = plugin_inst.get_output_name()
 
-        cache_data = get_from_cache(args.directory, args.pid, name)
+        data = get_from_cache(args.directory, args.pid, name)
 
-        if cache_data is None:
-            plugin_output = plugin_inst.analyze()
-            save_cache(args.directory, args.pid, name, plugin_output)
-            show_result(name, plugin_output)
+        if data is None:
+            data = plugin_inst.analyze()
+            save_cache(args.directory, args.pid, name, data)
+
+        if data:
+            show_result(name, data)
         else:
-            show_result(name, cache_data)
+            logging.debug('No data for %s' % name)
 
 
 def plugin_speed_cmd(p1, p2):
