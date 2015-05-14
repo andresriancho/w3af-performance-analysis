@@ -3,7 +3,7 @@ import pstats
 import logging
 import fnmatch
 
-from wpamod.plugins.base.analysis_plugin import AnalysisPlugin
+from wpamod.plugins.base.analysis_plugin import AnalysisPlugin, SPEED_SLOW
 
 BLACKLIST = ['*/profiling/*', '*meliae*', '*pstats.py']
 MAX_FUNC = 15
@@ -13,6 +13,9 @@ class CPUUsageByFunction(AnalysisPlugin):
     """
     Prints out the functions which take more CPU time.
     """
+
+    SPEED = SPEED_SLOW
+
     def analyze(self):
         output = []
 

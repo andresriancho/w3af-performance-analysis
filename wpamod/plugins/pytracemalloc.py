@@ -3,13 +3,16 @@ import logging
 
 from tracemalloc import Snapshot, Filter
 
-from wpamod.plugins.base.analysis_plugin import AnalysisPlugin
+from wpamod.plugins.base.analysis_plugin import AnalysisPlugin, SPEED_MEDIUM
 
 
 class PyTraceMallocSummary(AnalysisPlugin):
     """
     Prints out the Top10 lines of code where memory is allocated
     """
+
+    SPEED = SPEED_MEDIUM
+
     def analyze(self):
         output = []
 

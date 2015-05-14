@@ -2,8 +2,16 @@ import os
 import glob
 import logging
 
+SPEED_SLOW = 4
+SPEED_MEDIUM = 3
+SPEED_FAST = 2
+SPEED_VERY_FAST = 1
+
 
 class AnalysisPlugin(object):
+
+    SPEED = SPEED_FAST
+
     def __init__(self, input_directory, pid):
         self.input_directory = input_directory
         self.pid = pid

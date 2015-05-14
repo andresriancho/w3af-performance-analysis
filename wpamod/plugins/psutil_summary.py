@@ -2,10 +2,13 @@ import logging
 import json
 import humanize
 
-from wpamod.plugins.base.analysis_plugin import AnalysisPlugin
+from wpamod.plugins.base.analysis_plugin import AnalysisPlugin, SPEED_FAST
 
 
 class PSUtilSummary(AnalysisPlugin):
+
+    SPEED = SPEED_FAST
+
     def analyze(self):
         """
         Show a summary of memory usage for python processes

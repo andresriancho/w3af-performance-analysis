@@ -42,15 +42,15 @@ def main():
     configure_logging(args.debug)
     logging.debug('Starting performance analysis')
 
-    output = []
-
     if args.clear_cache:
         clear_cache(args.directory)
 
     if not is_valid_pid(args.directory, args.pid):
         sys.exit(-1)
 
-    for plugin_klass in filter_enabled_plugins(args):
+    enabled_plugins = filter_enabled_plugins(args)
+
+    for plugin_klass in sorted(enabled_plugins, plugin_speed_cmd):
         plugin_inst = plugin_klass(args.directory, args.pid)
         name = plugin_inst.get_output_name()
 
@@ -59,11 +59,13 @@ def main():
         if cache_data is None:
             plugin_output = plugin_inst.analyze()
             save_cache(args.directory, args.pid, name, plugin_output)
-            output.append((name, plugin_output))
+            show_result(name, plugin_output)
         else:
-            output.append((name, cache_data))
+            show_result(name, cache_data)
 
-    show_result('Performance analysis', tuple(output))
+
+def plugin_speed_cmd(p1, p2):
+    return cmp(p1.SPEED, p2.SPEED)
 
 
 def filter_enabled_plugins(args):

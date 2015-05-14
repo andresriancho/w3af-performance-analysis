@@ -2,13 +2,15 @@ import os
 import re
 import logging
 
-from wpamod.plugins.base.analysis_plugin import AnalysisPlugin
+from wpamod.plugins.base.analysis_plugin import AnalysisPlugin, SPEED_MEDIUM
 
 
 class LogParser(AnalysisPlugin):
     """
     Summarize the log message types
     """
+    SPEED = SPEED_MEDIUM
+
     LOG_RE = re.compile('\[.* - (.*?)\]')
 
     IS_NOT_A_404_RE = re.compile('is NOT a 404')

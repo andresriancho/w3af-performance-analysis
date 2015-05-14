@@ -1,10 +1,13 @@
 import logging
 
 from wpamod.meliae_analysis.load_meliae import load_meliae
-from wpamod.plugins.base.analysis_plugin import AnalysisPlugin
+from wpamod.plugins.base.analysis_plugin import AnalysisPlugin, SPEED_SLOW
 
 
 class MeliaeUsageSummary(AnalysisPlugin):
+
+    SPEED = SPEED_SLOW
+
     def analyze(self):
         """
         Show a summary of two memory dumps:

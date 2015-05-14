@@ -3,7 +3,7 @@ import logging
 import json
 import humanize
 
-from wpamod.plugins.base.analysis_plugin import AnalysisPlugin
+from wpamod.plugins.base.analysis_plugin import AnalysisPlugin, SPEED_VERY_FAST
 
 
 class SystemInformation(AnalysisPlugin):
@@ -13,6 +13,8 @@ class SystemInformation(AnalysisPlugin):
 
     Which is stored in w3af-psutil.data
     """
+    SPEED = SPEED_VERY_FAST
+
     def analyze(self):
         psutil_file = os.path.join(self.input_directory, 'w3af-psutil.data')
         logging.debug('Analyzing "%s" psutil dump' % psutil_file)

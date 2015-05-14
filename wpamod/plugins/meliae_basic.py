@@ -1,7 +1,7 @@
 import logging
 
 from wpamod.meliae_analysis.load_meliae import load_meliae
-from wpamod.plugins.base.analysis_plugin import AnalysisPlugin
+from wpamod.plugins.base.analysis_plugin import AnalysisPlugin, SPEED_SLOW
 
 
 class MeliaeBasic(AnalysisPlugin):
@@ -11,6 +11,8 @@ class MeliaeBasic(AnalysisPlugin):
     http://jam-bazaar.blogspot.com.ar/2010/08/step-by-step-meliae.html
     http://jam-bazaar.blogspot.com.ar/2009/11/memory-debugging-with-meliae.html
     """
+    SPEED = SPEED_SLOW
+
     def analyze(self):
         memory_over_time = []
 

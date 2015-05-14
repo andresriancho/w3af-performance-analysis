@@ -2,10 +2,12 @@ import os
 import logging
 import json
 
-from wpamod.plugins.base.analysis_plugin import AnalysisPlugin
+from wpamod.plugins.base.analysis_plugin import AnalysisPlugin, SPEED_VERY_FAST
 
 
 class CoreStatus(AnalysisPlugin):
+
+    SPEED = SPEED_VERY_FAST
 
     DATA_KEYS = {'Requests per minute', 'Crawl queue input speed',
                  'Crawl queue output speed', 'Crawl queue size',
