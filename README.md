@@ -30,6 +30,9 @@ virtualenv --python=/opt/tracemalloc/py27/bin/python2.7 w3af-performance-analysi
 cd ~/tools/w3af-performance-analysis/
 pip install cython==0.21.2
 pip install -r requirements.txt  --allow-external meliae --allow-unverified meliae
+
+# Verify install
+python -c 'import tracemalloc'
 ```
 
 ## Usage
