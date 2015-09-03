@@ -32,7 +32,11 @@ class CoreStatus(AnalysisPlugin):
         for i, core_dump in enumerate(self.get_input_files('*.core')):
             logging.debug('Analyzing "%s" core status dump' % core_dump)
 
-            core_stat_json = json.load(file(core_dump))
+            try:
+                core_stat_json = json.load(file(core_dump))
+            except ValueError:
+                logging.debug('Ignoring %s - JSON decode failed!' % core_dump)
+                continue
 
             if self.CACHE_STATS in core_stat_json:
                 cache_stats = core_stat_json.pop(self.CACHE_STATS)
