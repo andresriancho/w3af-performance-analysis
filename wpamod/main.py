@@ -90,7 +90,7 @@ def parse_args():
     """
     parser = argparse.ArgumentParser(description='Analyze w3af performance data')
     parser.add_argument('directory', help='Input directory')
-    parser.add_argument('pid', help='Input directory')
+    parser.add_argument('pid', help='Process ID to analyze')
     parser.add_argument('--debug', action='store_true',
                         help='Print debugging information')
     parser.add_argument('--clear-cache', action='store_true',
