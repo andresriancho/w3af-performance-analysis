@@ -5,6 +5,10 @@ import os
 
 from jinja2 import Template
 
+from wpamod.utils.main_pid import get_main_pid
+from wpamod.utils.log import configure_logging
+from wpamod.utils.cache import save_cache, clear_cache, get_from_cache
+
 from wpamod.plugins.meliae_basic import MeliaeBasic
 from wpamod.plugins.meliae_largest import MeliaeLargestObject
 from wpamod.plugins.meliae_usage_summary import MeliaeUsageSummary
@@ -14,8 +18,6 @@ from wpamod.plugins.psutil_summary import PSUtilSummary
 from wpamod.plugins.core_status import CoreStatus
 from wpamod.plugins.request_count import HTTPRequestCount
 from wpamod.plugins.log_parser import LogParser
-from wpamod.utils.log import configure_logging
-from wpamod.utils.cache import save_cache, clear_cache, get_from_cache
 
 # Leave the plugins list in this format so it's easier to comment the plugins
 # we don't need during development/testing
@@ -54,14 +56,14 @@ def main():
             logging.error(msg % directory)
             sys.exit(-1)
 
-        args = (directory, revision)
-        logging.debug('Starting wpa-html analysis of %s (%s)' % args)
+        pargs = (directory, revision)
+        logging.debug('Starting wpa-html analysis of %s (%s)' % pargs)
 
         if args.clear_cache:
             clear_cache(directory)
 
         #
-        # Find unique revision
+        # Set unique revision id
         #
         i = -1
 
@@ -74,8 +76,8 @@ def main():
 
         render_context[unique_revision]['directory'] = directory
 
-        # TODO! Auto-detect PID? Analyze all PIDs?
-        pid = 63
+        # Choose which PID to analyze
+        pid = get_main_pid(directory)
 
         for plugin_klass in PLUGINS:
             plugin_inst = plugin_klass(directory, pid)
@@ -101,8 +103,8 @@ def parse_args():
     """
     parser = argparse.ArgumentParser(description='Analyze w3af performance'
                                                  ' data and generate HTML')
-    parser.add_argument('directory', help='Input directories')
-    parser.add_argument('--output-file', help='Output HTML file')
+    parser.add_argument('directories', help='Input directories', nargs='+')
+    parser.add_argument('--output-file', help='Output HTML file', required=True)
     parser.add_argument('--debug', action='store_true',
                         help='Print debugging information')
     parser.add_argument('--clear-cache', action='store_true',

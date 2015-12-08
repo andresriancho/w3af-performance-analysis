@@ -1,8 +1,13 @@
+import sys
 import logging
 import argparse
-import sys
 
 from wpamod.utils.show_results import show_result
+from wpamod.utils.main_pid import get_main_pid
+from wpamod.utils.log import configure_logging
+from wpamod.utils.cache import save_cache, clear_cache, get_from_cache
+from wpamod.utils.is_valid_pid import is_valid_pid
+
 from wpamod.plugins.meliae_basic import MeliaeBasic
 from wpamod.plugins.meliae_largest import MeliaeLargestObject
 from wpamod.plugins.meliae_usage_summary import MeliaeUsageSummary
@@ -14,9 +19,6 @@ from wpamod.plugins.core_status import CoreStatus
 from wpamod.plugins.pytracemalloc import PyTraceMallocSummary
 from wpamod.plugins.request_count import HTTPRequestCount
 from wpamod.plugins.log_parser import LogParser
-from wpamod.utils.log import configure_logging
-from wpamod.utils.cache import save_cache, clear_cache, get_from_cache
-from wpamod.utils.is_valid_pid import is_valid_pid
 
 # Leave the plugins list in this format so it's easier to comment the plugins
 # we don't need during development/testing
@@ -70,48 +72,6 @@ def main():
             show_result(name, data)
         else:
             logging.debug('No data for %s' % name)
-
-
-def get_main_pid(directory):
-    """
-    :param directory: The directory where the profiling dump lives
-    :return: The PID of the main w3af process
-    """
-    mask = 'w3af-*-*.*'
-    glob_path = os.path.join(directory, mask)
-    files = glob.glob(glob_path)
-    files.sort()
-
-    pid_count = {}
-
-    for file_name in files:
-        try:
-            pid = int(file_name.split('-')[1])
-        except (IndexError, ValueError):
-            continue
-
-        if pid in pid_count:
-            pid_count[pid] += 1
-        else:
-            pid_count[pid] = 1
-
-    max_count = 0
-    max_pid = None
-
-    for pid, count in pid_count.iteritems():
-        if count > max_count:
-            max_pid = pid
-            max_count = count
-
-    if max_pid is None:
-        msg = 'Failed to automatically retrieve the main PID, valid PIDs are: %s'
-        logging.warning(msg % ', '.join(pid_count.keys()))
-        sys.exit(-1)
-    else:
-        logging.info('Analyzing PID %s' % max_pid)
-        logging.info('')
-
-    return str(max_pid)
 
 
 def plugin_speed_cmd(p1, p2):
