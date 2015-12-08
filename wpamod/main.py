@@ -45,25 +45,73 @@ def main():
     if args.clear_cache:
         clear_cache(args.directory)
 
-    if not is_valid_pid(args.directory, args.pid):
-        sys.exit(-1)
+    if args.pid is None:
+        # Find the main/parent PID and use that for the rest of the analysis
+        pid = get_main_pid(args.directory)
+    else:
+        if not is_valid_pid(args.directory, args.pid):
+            sys.exit(-1)
+        else:
+            pid = args.pid
 
     enabled_plugins = filter_enabled_plugins(args)
 
     for plugin_klass in sorted(enabled_plugins, plugin_speed_cmd):
-        plugin_inst = plugin_klass(args.directory, args.pid)
+        plugin_inst = plugin_klass(args.directory, pid)
         name = plugin_inst.get_output_name()
 
-        data = get_from_cache(args.directory, args.pid, name)
+        data = get_from_cache(args.directory, pid, name)
 
         if data is None:
             data = plugin_inst.analyze()
-            save_cache(args.directory, args.pid, name, data)
+            save_cache(args.directory, pid, name, data)
 
         if data:
             show_result(name, data)
         else:
             logging.debug('No data for %s' % name)
+
+
+def get_main_pid(directory):
+    """
+    :param directory: The directory where the profiling dump lives
+    :return: The PID of the main w3af process
+    """
+    mask = 'w3af-*-*.*'
+    glob_path = os.path.join(directory, mask)
+    files = glob.glob(glob_path)
+    files.sort()
+
+    pid_count = {}
+
+    for file_name in files:
+        try:
+            pid = int(file_name.split('-')[1])
+        except (IndexError, ValueError):
+            continue
+
+        if pid in pid_count:
+            pid_count[pid] += 1
+        else:
+            pid_count[pid] = 1
+
+    max_count = 0
+    max_pid = None
+
+    for pid, count in pid_count.iteritems():
+        if count > max_count:
+            max_pid = pid
+            max_count = count
+
+    if max_pid is None:
+        msg = 'Failed to automatically retrieve the main PID, valid PIDs are: %s'
+        logging.warning(msg % ', '.join(pid_count.keys()))
+        sys.exit(-1)
+    else:
+        logging.info('Analyzing PID %s' % max_pid)
+        logging.info('')
+
+    return str(max_pid)
 
 
 def plugin_speed_cmd(p1, p2):
@@ -90,7 +138,9 @@ def parse_args():
     """
     parser = argparse.ArgumentParser(description='Analyze w3af performance data')
     parser.add_argument('directory', help='Input directory')
-    parser.add_argument('pid', help='Process ID to analyze')
+    parser.add_argument('pid', nargs='?', help='Process ID to analyze, if none'
+                                               ' is specified the main process'
+                                               ' will be used.')
     parser.add_argument('--debug', action='store_true',
                         help='Print debugging information')
     parser.add_argument('--clear-cache', action='store_true',
