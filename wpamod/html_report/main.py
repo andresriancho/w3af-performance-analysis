@@ -1,5 +1,6 @@
-import logging
+import webbrowser
 import argparse
+import logging
 import sys
 import os
 
@@ -94,7 +95,11 @@ def main():
     # Render the HTML file using the context
     template = Template(file('wpamod/html_report/templates/report.html').read())
     rendered_template = template.render(render_context)
-    file(args.output_file, 'w').write(rendered_template)
+
+    output = os.path.abspath(os.path.expanduser(args.output_file))
+    file(output, 'w').write(rendered_template)
+
+    webbrowser.open('file://%s' % output)
 
 
 def parse_args():
