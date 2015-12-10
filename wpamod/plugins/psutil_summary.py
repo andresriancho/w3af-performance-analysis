@@ -30,6 +30,19 @@ class PSUtilSummary(AnalysisPlugin):
 
         return output
 
+    def generate_graph_data(self):
+        """
+        :return: The data to use in the HTML graph
+        """
+        raw_data = self.analyze()
+        graph_data = []
+
+        for measurement in raw_data:
+            rss = float(measurement[1][0][1][0][1].split(' ')[0])
+            graph_data.append(rss)
+
+        return graph_data
+
     def _process_psutil_memory_data(self, count, psutil_data, output,
                                     input_file):
         """
