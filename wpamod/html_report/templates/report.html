@@ -20,6 +20,13 @@
         body {
            padding-top: 65px;
         }
+
+        .chart-legend li span{
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            margin-right: 5px;
+        }
     </style>
 
     <body>
@@ -45,36 +52,51 @@
         </nav>
 
         <div class="row">
-            <div class="col-md-8 col-md-offset-2">
+            <div class="col-md-6 col-md-offset-2">
                 <h3>PSUtil memory usage</h3>
-
-                <canvas id="PSUtilLineChart" width="800" height="400"></canvas>
-                <script>
-                    var colors = d3.scale.category10();
-
-                    var data = {
-                        labels: {{ max_items_count(collector_data, 'PSUtils memory usage summary') }},
-                        datasets: [
-                            {% for revision in collector_data.keys() %}
-                                {
-                                    label: "{{ revision }}",
-                                    fillColor: colors({{ loop.index }}),
-                                    strokeColor: "rgba(220,220,220,1)",
-                                    pointColor: "rgba(220,220,220,1)",
-                                    pointStrokeColor: "#fff",
-                                    pointHighlightFill: "#fff",
-                                    pointHighlightStroke: "rgba(220,220,220,1)",
-                                    data: {{ collector_data[revision]['PSUtils memory usage summary'] }}
-                                },
-                            {% endfor %}
-                        ]
-                    };
-
-                    // Get the context of the canvas element we want to select
-                    var ctx = document.getElementById("PSUtilLineChart").getContext("2d");
-                    var PSUtilLineChart = new Chart(ctx).Line(data);
-                </script>
             </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-2">
+                <canvas id="PSUtilLineChart" width="800" height="400"></canvas>
+            </div>
+            <div class="col-md-2">
+                <div id="PSUtilLineChart-legend" class="chart-legend"></div>
+            </div>
+
+            <script>
+                var colors = d3.scale.category10();
+
+                var data = {
+                    labels: {{ max_items_count(collector_data, 'PSUtils memory usage summary') }},
+                    datasets: [
+                        {% for revision in collector_data.keys() %}
+                            {
+                                label: "{{ revision }}",
+                                fillColor: colors({{ loop.index }}),
+                                strokeColor: colors({{ loop.index }}),
+                                pointColor: colors({{ loop.index }}),
+                                pointStrokeColor: "#fff",
+                                pointHighlightFill: "#fff",
+                                pointHighlightStroke: "rgba(220,220,220,1)",
+                                data: {{ collector_data[revision]['PSUtils memory usage summary'] }}
+                            },
+                        {% endfor %}
+                    ]
+                };
+
+                var options = {
+                    multiTooltipTemplate: "<%= datasetLabel %> - <%= value %>",
+                    responsive : true
+                };
+
+                // Get the context of the canvas element we want to select
+                var ctx = document.getElementById("PSUtilLineChart").getContext("2d");
+                var PSUtilLineChart = new Chart(ctx).Line(data);
+
+                // Legend
+                document.getElementById('PSUtilLineChart-legend').innerHTML = PSUtilLineChart.generateLegend();
+            </script>
         </div>
     </body>
 </html>
