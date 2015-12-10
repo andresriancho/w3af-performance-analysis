@@ -64,7 +64,34 @@
           </div>
         </nav>
 
-        <div class="row">
+        <div class="row" id="summary">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>Revision summary</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Input directory</th>
+                            <th>w3af revision</th>
+                            <th>w3af revision date</th>
+                            <th>collector revision</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for revision in collector_data.keys() %}
+                            <tr>
+                                <td>{{ collector_data[revision]['meta-data']['directory'] }}</td>
+                                <td><a href="https://github.com/andresriancho/w3af/commit/{{ collector_data[revision]['meta-data']['revision'] }}">{{ collector_data[revision]['meta-data']['revision'] }}</a></td>
+                                <td>{{ collector_data[revision]['meta-data']['revision-date'] }}</td>
+                                <td><a href="https://github.com/andresriancho/collector/commit/{{ collector_data[revision]['meta-data']['collector-revision'][:7] }}">{{ collector_data[revision]['meta-data']['collector-revision'][:7] }}</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <div class="row" id="memory">
             <div class="col-md-6 col-md-offset-2">
                 <h3>PSUtil memory usage</h3>
                 <p>

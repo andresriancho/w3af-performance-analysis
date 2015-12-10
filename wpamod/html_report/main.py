@@ -1,3 +1,4 @@
+import subprocess
 import webbrowser
 import argparse
 import logging
@@ -6,6 +7,7 @@ import sys
 import os
 
 from jinja2 import StrictUndefined, Environment
+from collections import OrderedDict
 
 from wpamod.utils.main_pid import get_main_pid
 from wpamod.utils.log import configure_logging
@@ -48,7 +50,7 @@ def main():
     logging.debug('Starting wpa-html')
 
     # Here we store the data to send to the HTML template
-    collector_data = {}
+    collector_data = OrderedDict()
 
     for directory in args.directories:
         process_directory(args, directory, collector_data)
@@ -87,6 +89,24 @@ def max_items_count(collector_data, plugin_name):
             max_items = current_items
 
     return range(max_items)
+
+
+def get_revision_date(revision):
+    """
+    :param revision: The revision to check
+    :return: The date for the w3af revision, n/a if the w3af directory does not
+             exist in ../w3af/
+    """
+    get_date_cmd = 'git show -s --format=%%ci %s' % revision
+    try:
+        return subprocess.check_output(get_date_cmd,
+                                       cwd=os.path.abspath('../w3af/'),
+                                       shell=True)
+    except:
+        logging.debug('Failed to retrieve the revision date. No w3af git'
+                      ' repository found at ../w3af/')
+        return 'n/a'
+
 
 def process_directory(args, directory, collector_data):
     """
@@ -135,6 +155,7 @@ def process_directory(args, directory, collector_data):
     # Save the analysis meta-data
     meta_data = {'directory': directory,
                  'revision': revision,
+                 'revision-date': get_revision_date(revision),
                  'collector-revision': collector_revision}
 
     collector_data[unique_revision]['meta-data'] = meta_data
