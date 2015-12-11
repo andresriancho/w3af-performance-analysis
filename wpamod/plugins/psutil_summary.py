@@ -9,7 +9,7 @@ class PSUtilSummary(AnalysisPlugin):
 
     SPEED = SPEED_FAST
 
-    def analyze(self):
+    def analyze(self, humanize_bytes=True):
         """
         Show a summary of memory usage for python processes
         """
@@ -25,8 +25,9 @@ class PSUtilSummary(AnalysisPlugin):
             except:
                 logging.debug('Failed to load JSON from %s' % input_file)
             else:
-                self._process_psutil_memory_data(i, psutil_data, output,
-                                                 input_file)
+                self._process_psutil_memory_data(i, psutil_data,
+                                                 output, input_file,
+                                                 humanize_bytes=humanize_bytes)
 
         return output
 
@@ -34,17 +35,17 @@ class PSUtilSummary(AnalysisPlugin):
         """
         :return: The data to use in the HTML graph
         """
-        raw_data = self.analyze()
+        raw_data = self.analyze(humanize_bytes=False)
         graph_data = []
 
         for measurement in raw_data:
-            rss = float(measurement[1][0][1][0][1].split(' ')[0])
+            rss = float(measurement[1][0][1][0][1])
             graph_data.append(rss)
 
         return graph_data
 
     def _process_psutil_memory_data(self, count, psutil_data, output,
-                                    input_file):
+                                    input_file, humanize_bytes=True):
         """
         :param psutil_data: A dict containing the data
         :param output: A list with our parsed output
@@ -61,8 +62,12 @@ class PSUtilSummary(AnalysisPlugin):
                 usage = float(data['memory_percent'])
                 usage = '%0.2f %%' % usage
 
-                shared = humanize.naturalsize(data['memory_info_ex']['shared'])
-                rss = humanize.naturalsize(data['memory_info_ex']['rss'])
+                if humanize_bytes:
+                    shared = humanize.naturalsize(data['memory_info_ex']['shared'])
+                    rss = humanize.naturalsize(data['memory_info_ex']['rss'])
+                else:
+                    shared = data['memory_info_ex']['shared'] / 1024 / 1024
+                    rss = data['memory_info_ex']['rss'] / 1024 / 1024
 
                 process_data = [('rss', rss),
                                 ('shared', shared),
