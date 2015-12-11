@@ -145,6 +145,59 @@
             </script>
         </div>
 
+        <div class="row">
+            <div class="col-md-6 col-md-offset-2">
+                <h3>Total memory referenced by Python GC</h3>
+                <p>
+                    Total memory referenced by Python GC, note that memory leaks at python libraries
+                    written in C will not appear here.
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-2">
+                <canvas id="GCReferencedMemoryLineChart" width="800" height="400"></canvas>
+            </div>
+            <div class="col-md-2">
+                <div id="GCReferencedMemoryLineChart-legend" class="chart-legend"></div>
+            </div>
+
+            <script>
+                var colors = d3.scale.category10();
+
+                var data = {
+                    labels: {{ max_items_count(collector_data, 'Total memory referenced by Python GC') }},
+                    datasets: [
+                        {% for revision in collector_data.keys() %}
+                            {
+                                label: "{{ revision }}",
+                                fillColor: convertHex(colors({{ loop.index }}), 20),
+                                strokeColor: colors({{ loop.index }}),
+                                pointColor: colors({{ loop.index }}),
+                                pointStrokeColor: "#fff",
+                                pointHighlightFill: "#fff",
+                                pointHighlightStroke: "rgba(220,220,220,1)",
+                                data: {{ collector_data[revision]['Total memory referenced by Python GC'] }}
+                            },
+                        {% endfor %}
+                    ]
+                };
+
+                var options = {
+                    multiTooltipTemplate: "<%=datasetLabel%> : <%= value %> MiB",
+                    responsive: true,
+                    scaleLabel: "<%=value%> MiB"
+                };
+
+                // Get the context of the canvas element we want to select
+                var ctx = document.getElementById("GCReferencedMemoryLineChart").getContext("2d");
+                var GCReferencedMemoryLineChart = new Chart(ctx).Line(data, options);
+
+                // Legend
+                document.getElementById('GCReferencedMemoryLineChart-legend').innerHTML = GCReferencedMemoryLineChart.generateLegend();
+            </script>
+        </div>
+
         <div class="row" id="cpu">
             <div class="col-md-6 col-md-offset-2">
                 <h3>Operating System Load</h3>

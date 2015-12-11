@@ -35,5 +35,17 @@ class MeliaeBasic(AnalysisPlugin):
 
         return memory_over_time
 
+    def generate_graph_data(self):
+        """
+        :return: The data to use in the HTML graph
+        """
+        raw_data = self.analyze()
+        graph_data = []
+
+        for measurement_idx, measurement_value in raw_data:
+            graph_data.append(float(measurement_value.replace('MiB', '')))
+
+        return graph_data
+
     def get_output_name(self):
         return 'Total memory referenced by Python GC'

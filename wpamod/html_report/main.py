@@ -122,7 +122,8 @@ def process_directory(args, directory, collector_data):
         config_version = os.path.join(directory, 'config', 'version')
         revision = file(config_version).read().strip()
     except IOError:
-        msg = '%s is not a valid collector output directory'
+        msg = ('%s is not a valid collector output directory (config/version is'
+               ' missing)')
         logging.error(msg % directory)
         sys.exit(-1)
 
@@ -136,7 +137,8 @@ def process_directory(args, directory, collector_data):
         rev_file = os.path.join(directory, 'config', 'collector.revision')
         collector_revision = file(rev_file).read().strip()
     except IOError:
-        msg = '%s is not a valid collector output directory.'
+        msg = ('%s is not a valid collector output directory (config/'
+               'collector.revision is missing).')
         logging.error(msg % directory)
         sys.exit(-2)
 
