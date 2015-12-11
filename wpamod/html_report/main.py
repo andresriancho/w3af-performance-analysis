@@ -29,7 +29,7 @@ from wpamod.plugins.log_parser import LogParser
 # We'll create an HTML report using all these plugins, note that this is
 # different from `wpa` where the user can choose which plugins to run
 PLUGINS = [
-           #MeliaeBasic,
+           MeliaeBasic,
            #MeliaeUsageSummary,
            #MeliaeLargestObject,
            #CPUUsageByFunction,
