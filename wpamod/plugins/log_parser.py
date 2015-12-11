@@ -8,6 +8,7 @@ FOUR_ANALYSIS = '404 analysis'
 NOT_404_TAG = 'Tagged as NOT 404'
 TAG_404 = 'Tagged as 404'
 STATUS_404 = 'HTTP response status is 404'
+LOG_TYPES = 'Log types'
 
 
 class LogParser(AnalysisPlugin):
@@ -78,7 +79,7 @@ class LogParser(AnalysisPlugin):
 
         four_o_four_result = four_o_four_data.items()
 
-        return [('Log types', log_type_result),
+        return [(LOG_TYPES, log_type_result),
                 (FOUR_ANALYSIS, four_o_four_result)]
 
     def generate_graph_data(self):
@@ -91,6 +92,9 @@ class LogParser(AnalysisPlugin):
         for measurement in raw_data:
             if measurement[0] == FOUR_ANALYSIS:
                 graph_data[FOUR_ANALYSIS] = dict(measurement[1])
+
+            if measurement[0] == LOG_TYPES:
+                graph_data[LOG_TYPES] = dict(measurement[1])
 
         return graph_data
 

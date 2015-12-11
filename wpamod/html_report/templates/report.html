@@ -304,6 +304,86 @@
         </div>
 
 
+        <div class="row">
+            <div class="col-md-6 col-md-offset-2">
+                <h3>Log analysis</h3>
+                <p>
+                    Analyze the w3af scan log message types
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-2">
+                <canvas id="LogTypeBarChart" width="800" height="400"></canvas>
+            </div>
+            <div class="col-md-2">
+                <div id="LogTypeBarChart-legend" class="chart-legend"></div>
+            </div>
+
+            <script>
+                var colors = d3.scale.category10();
+
+                var data = {
+                    labels: {{ collector_data.keys() }},
+                    datasets: [
+                        {
+                            label: "debug",
+                            fillColor: "rgba(0, 0, 128, 0.4)",
+                            strokeColor: "rgba(0, 0, 128, 0.9)",
+                            pointColor: "rgba(0, 0, 128, 0.9)",
+                            pointStrokeColor: "#fff",
+                            pointHighlightFill: "#fff",
+                            pointHighlightStroke: "rgba(220,220,220,1)",
+                            data: [{% for revision in collector_data.keys() %}
+                                        {{ collector_data[revision]['Log parser']['Log types']['debug'] }},
+                                   {% endfor %}]
+
+                        },
+                        {
+                            label: "information",
+                            fillColor: "rgba(255, 255, 0, 0.2)",
+                            strokeColor: "rgba(255, 255, 0, 0.9)",
+                            pointColor: "rgba(255, 255, 0, 0.9)",
+                            pointStrokeColor: "#fff",
+                            pointHighlightFill: "#fff",
+                            pointHighlightStroke: "rgba(220,220,220,1)",
+                            data: [{% for revision in collector_data.keys() %}
+                                        {{ collector_data[revision]['Log parser']['Log types']['information'] }},
+                                   {% endfor %}]
+
+                        },
+                        {
+                            label: "error",
+                            fillColor: "rgba(255, 0, 0, 0.2)",
+                            strokeColor: "rgba(255, 0, 0, 0.9)",
+                            pointColor: "rgba(255, 0, 0, 0.9)",
+                            pointStrokeColor: "#fff",
+                            pointHighlightFill: "#fff",
+                            pointHighlightStroke: "rgba(220,220,220,1)",
+                            data: [{% for revision in collector_data.keys() %}
+                                        {{ collector_data[revision]['Log parser']['Log types']['error'] }},
+                                   {% endfor %}]
+
+                        },
+                    ]
+                };
+
+                var options = {
+                    multiTooltipTemplate: "<%=datasetLabel%> : <%= value %>",
+                    responsive: true,
+                    scaleLabel: "<%=value%>"
+                };
+
+                // Get the context of the canvas element we want to select
+                var ctx = document.getElementById("LogTypeBarChart").getContext("2d");
+                var LogTypeBarChart = new Chart(ctx).Bar(data, options);
+
+                // Legend
+                document.getElementById('LogTypeBarChart-legend').innerHTML = LogTypeBarChart.generateLegend();
+            </script>
+        </div>
+
+
         <div class="row" id="network">
             <div class="col-md-6 col-md-offset-2">
                 <h3>HTTP request count</h3>
