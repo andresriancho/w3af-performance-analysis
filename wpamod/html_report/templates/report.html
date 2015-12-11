@@ -164,31 +164,22 @@
             <script>
                 var colors = d3.scale.category10();
 
-                function get_nulled_data(length, index, value) {
-                    var nulled_data = [];
-
-                    for (var i = 0; i < length; i++) {
-                        nulled_data.push(null);
-                    }
-                    nulled_data[index] = value;
-                    return nulled_data;
-                }
-
                 var data = {
                     labels: {{ collector_data.keys() }},
                     datasets: [
-                        {% for revision in collector_data.keys() %}
-                            {
-                                label: "{{ revision }}",
-                                fillColor: convertHex(colors({{ loop.index }}), 20),
-                                strokeColor: colors({{ loop.index }}),
-                                pointColor: colors({{ loop.index }}),
-                                pointStrokeColor: "#fff",
-                                pointHighlightFill: "#fff",
-                                pointHighlightStroke: "rgba(220,220,220,1)",
-                                data: get_nulled_data({{ collector_data.keys()|length }}, {{ loop.index }} - 1, {{ collector_data[revision]['HTTP requests sent'] }})
-                            },
-                        {% endfor %}
+                        {
+                            label: "HTTP Requests",
+                            fillColor: convertHex(colors({{ loop.index }}), 20),
+                            strokeColor: colors({{ loop.index }}),
+                            pointColor: colors({{ loop.index }}),
+                            pointStrokeColor: "#fff",
+                            pointHighlightFill: "#fff",
+                            pointHighlightStroke: "rgba(220,220,220,1)",
+                            data: [{% for revision in collector_data.keys() %}
+                                        {{ collector_data[revision]['HTTP requests sent'] }},
+                                   {% endfor %}]
+
+                        },
                     ]
                 };
 
