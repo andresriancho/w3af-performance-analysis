@@ -18,7 +18,7 @@ def get_main_pid(directory):
 
     for file_name in files:
         try:
-            pid = int(file_name.split('-')[1])
+            pid = int(file_name.split('w3af-')[1].split('-')[0])
         except (IndexError, ValueError):
             continue
 

@@ -31,7 +31,7 @@ from wpamod.plugins.log_parser import LogParser
 PLUGINS = [
            MeliaeBasic,
            #MeliaeUsageSummary,
-           #MeliaeLargestObject,
+           MeliaeLargestObject,
            #CPUUsageByFunction,
            #CoreStatus,
            PSUtilSummary,

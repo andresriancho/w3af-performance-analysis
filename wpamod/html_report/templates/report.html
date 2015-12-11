@@ -148,6 +148,57 @@
         </div>
 
         <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <h3>Largest objects</h3>
+                <p>Largest objects referenced by Python's GC, as measured by Meliae.
+                    Only the last memory dump is shown, to see all the dumps use <code>./wpa</code></p>
+
+                {% for revision in collector_data.keys() %}
+                    <table class="table table-striped">
+
+                        <caption>{{ revision }} - {{ collector_data[revision]['Largest objects in memory']['meta-data']['file'] }}</caption>
+
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Total referenced memory</th>
+                                <th>Object type</th>
+                                <th>Number of children</th>
+                                <th>Raw</th>
+                                <th>Child types</th>
+                                <th>Child values</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for top_n, object_data in collector_data[revision]['Largest objects in memory']['data'] %}
+                                <tr>
+                                    <td>{{ top_n }}</td>
+                                    <td>{{ object_data['Total referenced memory'] }}</td>
+                                    <td>{{ object_data['Type'] }}</td>
+                                    <td>{{ object_data['Number of children'] }}</td>
+                                    <td>{{ object_data['Raw'] }}</td>
+                                    <td>
+                                        {% for child_type in object_data.get('Child types', []) %}
+                                            {{ child_type }}<br>
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {% for child_value in object_data.get('Child values', []) %}
+                                            {{ child_value }}<br>
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+                {% endfor %}
+
+            </div>
+        </div>
+
+        <div class="row">
             <div class="col-md-6 col-md-offset-2">
                 <h3>Total memory referenced by Python GC</h3>
                 <p>
@@ -267,7 +318,7 @@
                 var options = {
                     multiTooltipTemplate: "<%=datasetLabel%> : <%= value %>",
                     responsive: true,
-                    scaleLabel: "<%=value%> requests"
+                    scaleLabel: "<%=value%> load"
                 };
 
                 // Get the context of the canvas element we want to select
@@ -390,7 +441,7 @@
                             pointHighlightFill: "#fff",
                             pointHighlightStroke: "rgba(220,220,220,1)",
                             data: [{% for revision in collector_data.keys() %}
-                                        {{ collector_data[revision]['Log parser']['Log types']['debug'] }},
+                                        {{ collector_data[revision]['Log parser']['Log types'].get('debug', 0) }},
                                    {% endfor %}]
 
                         },
@@ -403,7 +454,7 @@
                             pointHighlightFill: "#fff",
                             pointHighlightStroke: "rgba(220,220,220,1)",
                             data: [{% for revision in collector_data.keys() %}
-                                        {{ collector_data[revision]['Log parser']['Log types']['information'] }},
+                                        {{ collector_data[revision]['Log parser']['Log types'].get('information', 0) }},
                                    {% endfor %}]
 
                         },
@@ -416,7 +467,7 @@
                             pointHighlightFill: "#fff",
                             pointHighlightStroke: "rgba(220,220,220,1)",
                             data: [{% for revision in collector_data.keys() %}
-                                        {{ collector_data[revision]['Log parser']['Log types']['error'] }},
+                                        {{ collector_data[revision]['Log parser']['Log types'].get('error', 0) }},
                                    {% endfor %}]
 
                         }
