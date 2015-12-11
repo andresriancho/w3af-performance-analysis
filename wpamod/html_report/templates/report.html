@@ -59,6 +59,7 @@
                 <li class="active"><a href="#">Home</a></li>
                 <li><a href="#memory">Memory</a></li>
                 <li><a href="#cpu">CPU</a></li>
+                <li><a href="#core">Core Stats</a></li>
                 <li><a href="#network">Network</a></li>
               </ul>
             </div>
@@ -222,6 +223,86 @@
                 document.getElementById('OSLoadBarChart-legend').innerHTML = OSLoadBarChart.generateLegend();
             </script>
         </div>
+
+        <div class="row" id="core">
+            <div class="col-md-6 col-md-offset-2">
+                <h3>Analyze 404 responses</h3>
+                <p>
+                    Analyze the w3af scan log and count 404 responses
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-2">
+                <canvas id="LogBarChart" width="800" height="400"></canvas>
+            </div>
+            <div class="col-md-2">
+                <div id="LogBarChart-legend" class="chart-legend"></div>
+            </div>
+
+            <script>
+                var colors = d3.scale.category10();
+
+                var data = {
+                    labels: {{ collector_data.keys() }},
+                    datasets: [
+                        {
+                            label: "Tagged as NOT 404",
+                            fillColor: "rgba(0, 0, 128, 0.4)",
+                            strokeColor: "rgba(0, 0, 128, 0.9)",
+                            pointColor: "rgba(0, 0, 128, 0.9)",
+                            pointStrokeColor: "#fff",
+                            pointHighlightFill: "#fff",
+                            pointHighlightStroke: "rgba(220,220,220,1)",
+                            data: [{% for revision in collector_data.keys() %}
+                                        {{ collector_data[revision]['Log parser']['404 analysis']['Tagged as NOT 404'] }},
+                                   {% endfor %}]
+
+                        },
+                        {
+                            label: "Tagged as 404",
+                            fillColor: "rgba(255, 255, 0, 0.2)",
+                            strokeColor: "rgba(255, 255, 0, 0.9)",
+                            pointColor: "rgba(255, 255, 0, 0.9)",
+                            pointStrokeColor: "#fff",
+                            pointHighlightFill: "#fff",
+                            pointHighlightStroke: "rgba(220,220,220,1)",
+                            data: [{% for revision in collector_data.keys() %}
+                                        {{ collector_data[revision]['Log parser']['404 analysis']['Tagged as 404'] }},
+                                   {% endfor %}]
+
+                        },
+                        {
+                            label: "HTTP response status is 404",
+                            fillColor: "rgba(255, 0, 0, 0.2)",
+                            strokeColor: "rgba(255, 0, 0, 0.9)",
+                            pointColor: "rgba(255, 0, 0, 0.9)",
+                            pointStrokeColor: "#fff",
+                            pointHighlightFill: "#fff",
+                            pointHighlightStroke: "rgba(220,220,220,1)",
+                            data: [{% for revision in collector_data.keys() %}
+                                        {{ collector_data[revision]['Log parser']['404 analysis']['HTTP response status is 404'] }},
+                                   {% endfor %}]
+
+                        },
+                    ]
+                };
+
+                var options = {
+                    multiTooltipTemplate: "<%=datasetLabel%> : <%= value %>",
+                    responsive: true,
+                    scaleLabel: "<%=value%>"
+                };
+
+                // Get the context of the canvas element we want to select
+                var ctx = document.getElementById("LogBarChart").getContext("2d");
+                var LogBarChart = new Chart(ctx).Bar(data, options);
+
+                // Legend
+                document.getElementById('LogBarChart-legend').innerHTML = LogBarChart.generateLegend();
+            </script>
+        </div>
+
 
         <div class="row" id="network">
             <div class="col-md-6 col-md-offset-2">

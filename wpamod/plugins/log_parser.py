@@ -4,6 +4,11 @@ import logging
 
 from wpamod.plugins.base.analysis_plugin import AnalysisPlugin, SPEED_MEDIUM
 
+FOUR_ANALYSIS = '404 analysis'
+NOT_404_TAG = 'Tagged as NOT 404'
+TAG_404 = 'Tagged as 404'
+STATUS_404 = 'HTTP response status is 404'
+
 
 class LogParser(AnalysisPlugin):
     """
@@ -56,11 +61,11 @@ class LogParser(AnalysisPlugin):
 
             if is_a_404 or is_not_404 or returned_404:
                 if is_not_404:
-                    log_type = 'Tagged as NOT 404'
+                    log_type = NOT_404_TAG
                 elif is_a_404:
-                    log_type = 'Tagged as 404'
+                    log_type = TAG_404
                 else:
-                    log_type = 'HTTP response status is 404'
+                    log_type = STATUS_404
 
                 if log_type in four_o_four_data:
                     four_o_four_data[log_type] += 1
@@ -74,7 +79,20 @@ class LogParser(AnalysisPlugin):
         four_o_four_result = four_o_four_data.items()
 
         return [('Log types', log_type_result),
-                ('404 analysis', four_o_four_result)]
+                (FOUR_ANALYSIS, four_o_four_result)]
+
+    def generate_graph_data(self):
+        """
+        :return: The data to use in the HTML graph
+        """
+        raw_data = self.analyze()
+        graph_data = {}
+
+        for measurement in raw_data:
+            if measurement[0] == FOUR_ANALYSIS:
+                graph_data[FOUR_ANALYSIS] = dict(measurement[1])
+
+        return graph_data
 
     def get_output_name(self):
         return 'Log parser'

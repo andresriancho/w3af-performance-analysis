@@ -37,7 +37,7 @@ PLUGINS = [
            PSUtilSummary,
            SystemInformation,
            HTTPRequestCount,
-           #LogParser
+           LogParser
 ]
 
 GRAPH_SECTION = ' - graph'
