@@ -5,6 +5,9 @@ import humanize
 
 from wpamod.plugins.base.analysis_plugin import AnalysisPlugin, SPEED_VERY_FAST
 
+NETWORK = 'Network'
+LOAD_AVERAGE = 'Load average'
+
 
 class SystemInformation(AnalysisPlugin):
     """
@@ -35,7 +38,7 @@ class SystemInformation(AnalysisPlugin):
         # Load average
         #
         load = ' '.join(str(l) for l in psutil_data['Load average'])
-        data.append(('Load average', load))
+        data.append((LOAD_AVERAGE, load))
 
         #
         # Network
@@ -50,7 +53,7 @@ class SystemInformation(AnalysisPlugin):
             bytes_recv = bytes_recv / 1024 / 1024
             bytes_sent = bytes_sent / 1024 / 1024
 
-        data.append(('Network',
+        data.append((NETWORK,
                      (('Bytes sent', bytes_sent),
                       ('Bytes received', bytes_recv))))
 
@@ -75,9 +78,12 @@ class SystemInformation(AnalysisPlugin):
         graph_data = {}
 
         for measurement in raw_data:
-            if measurement[0] == 'Network':
-                graph_data['Network'] = [measurement[1][0][1],
-                                         measurement[1][1][1]]
+            if measurement[0] == NETWORK:
+                graph_data[NETWORK] = [measurement[1][0][1],
+                                       measurement[1][1][1]]
+
+            if measurement[0] == LOAD_AVERAGE:
+                graph_data[LOAD_AVERAGE] = [float(l.strip()) for l in measurement[1].split(' ')]
 
         return graph_data
 

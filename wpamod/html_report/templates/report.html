@@ -58,6 +58,7 @@
               <ul class="nav navbar-nav">
                 <li class="active"><a href="#">Home</a></li>
                 <li><a href="#memory">Memory</a></li>
+                <li><a href="#cpu">CPU</a></li>
                 <li><a href="#network">Network</a></li>
               </ul>
             </div>
@@ -143,7 +144,84 @@
             </script>
         </div>
 
+        <div class="row" id="cpu">
+            <div class="col-md-6 col-md-offset-2">
+                <h3>Operating System Load</h3>
+                <p>
+                    Operating system load, as shown by tools like top.
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-2">
+                <canvas id="OSLoadBarChart" width="800" height="400"></canvas>
+            </div>
+            <div class="col-md-2">
+                <div id="OSLoadBarChart-legend" class="chart-legend"></div>
+            </div>
 
+            <script>
+                var colors = d3.scale.category10();
+
+                var data = {
+                    labels: {{ collector_data.keys() }},
+                    datasets: [
+                        {
+                            label: "Last minute",
+                            fillColor: "rgba(0, 0, 128, 0.4)",
+                            strokeColor: "rgba(0, 0, 128, 0.9)",
+                            pointColor: "rgba(0, 0, 128, 0.9)",
+                            pointStrokeColor: "#fff",
+                            pointHighlightFill: "#fff",
+                            pointHighlightStroke: "rgba(220,220,220,1)",
+                            data: [{% for revision in collector_data.keys() %}
+                                        {{ collector_data[revision]['Operating System information']['Load average'][0] }},
+                                   {% endfor %}]
+
+                        },
+                        {
+                            label: "Last five minutes",
+                            fillColor: "rgba(255, 255, 0, 0.2)",
+                            strokeColor: "rgba(255, 255, 0, 0.9)",
+                            pointColor: "rgba(255, 255, 0, 0.9)",
+                            pointStrokeColor: "#fff",
+                            pointHighlightFill: "#fff",
+                            pointHighlightStroke: "rgba(220,220,220,1)",
+                            data: [{% for revision in collector_data.keys() %}
+                                        {{ collector_data[revision]['Operating System information']['Load average'][1] }},
+                                   {% endfor %}]
+
+                        },
+                        {
+                            label: "Last fifteen minutes",
+                            fillColor: "rgba(255, 0, 0, 0.2)",
+                            strokeColor: "rgba(255, 0, 0, 0.9)",
+                            pointColor: "rgba(255, 0, 0, 0.9)",
+                            pointStrokeColor: "#fff",
+                            pointHighlightFill: "#fff",
+                            pointHighlightStroke: "rgba(220,220,220,1)",
+                            data: [{% for revision in collector_data.keys() %}
+                                        {{ collector_data[revision]['Operating System information']['Load average'][2] }},
+                                   {% endfor %}]
+
+                        },
+                    ]
+                };
+
+                var options = {
+                    multiTooltipTemplate: "<%=datasetLabel%> : <%= value %>",
+                    responsive: true,
+                    scaleLabel: "<%=value%> requests"
+                };
+
+                // Get the context of the canvas element we want to select
+                var ctx = document.getElementById("OSLoadBarChart").getContext("2d");
+                var OSLoadBarChart = new Chart(ctx).Bar(data, options);
+
+                // Legend
+                document.getElementById('OSLoadBarChart-legend').innerHTML = OSLoadBarChart.generateLegend();
+            </script>
+        </div>
 
         <div class="row" id="network">
             <div class="col-md-6 col-md-offset-2">
@@ -169,9 +247,9 @@
                     datasets: [
                         {
                             label: "HTTP Requests",
-                            fillColor: convertHex(colors({{ loop.index }}), 20),
-                            strokeColor: colors({{ loop.index }}),
-                            pointColor: colors({{ loop.index }}),
+                            fillColor: convertHex(colors(6), 20),
+                            strokeColor: colors(6),
+                            pointColor: colors(6),
                             pointStrokeColor: "#fff",
                             pointHighlightFill: "#fff",
                             pointHighlightStroke: "rgba(220,220,220,1)",
