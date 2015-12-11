@@ -206,5 +206,71 @@
                 document.getElementById('HTTPRequestBarChart-legend').innerHTML = HTTPRequestBarChart.generateLegend();
             </script>
         </div>
+
+        <div class="row">
+            <div class="col-md-6 col-md-offset-2">
+                <h3>Bytes sent and received</h3>
+                <p>
+                    Bytes sent and received extracted from eth0 interface.
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-2">
+                <canvas id="BytesNetworkBarChart" width="800" height="400"></canvas>
+            </div>
+            <div class="col-md-2">
+                <div id="BytesNetworkBarChart-legend" class="chart-legend"></div>
+            </div>
+
+            <script>
+                var colors = d3.scale.category10();
+
+                var data = {
+                    labels: {{ collector_data.keys() }},
+                    datasets: [
+                        {
+                            label: "Bytes sent",
+                            fillColor: convertHex(colors(1), 20),
+                            strokeColor: colors(1),
+                            pointColor: colors(1),
+                            pointStrokeColor: "#fff",
+                            pointHighlightFill: "#fff",
+                            pointHighlightStroke: "rgba(220,220,220,1)",
+                            data: [{% for revision in collector_data.keys() %}
+                                       {{ collector_data[revision]['Operating System information']['Network'][0] }},
+                                   {% endfor %}]
+                        },
+
+                        {
+                            label: "Bytes received",
+                            fillColor: convertHex(colors(2), 20),
+                            strokeColor: colors(2),
+                            pointColor: colors(2),
+                            pointStrokeColor: "#fff",
+                            pointHighlightFill: "#fff",
+                            pointHighlightStroke: "rgba(220,220,220,1)",
+                            data: [{% for revision in collector_data.keys() %}
+                                       {{ collector_data[revision]['Operating System information']['Network'][1] }},
+                                   {% endfor %}]
+                        },
+                    ]
+                };
+
+                var options = {
+                    multiTooltipTemplate: "<%=datasetLabel%> : <%= value %>",
+                    responsive: true,
+                    scaleLabel: "<%=value%> MB"
+                };
+
+                // Get the context of the canvas element we want to select
+                var ctx = document.getElementById("BytesNetworkBarChart").getContext("2d");
+                var BytesNetworkBarChart = new Chart(ctx).Bar(data, options);
+
+                // Legend
+                document.getElementById('BytesNetworkBarChart-legend').innerHTML = BytesNetworkBarChart.generateLegend();
+            </script>
+        </div>
+
     </body>
 </html>

@@ -35,7 +35,7 @@ PLUGINS = [
            #CPUUsageByFunction,
            #CoreStatus,
            PSUtilSummary,
-           #SystemInformation,
+           SystemInformation,
            HTTPRequestCount,
            #LogParser
 ]

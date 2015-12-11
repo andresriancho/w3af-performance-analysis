@@ -15,7 +15,7 @@ class SystemInformation(AnalysisPlugin):
     """
     SPEED = SPEED_VERY_FAST
 
-    def analyze(self):
+    def analyze(self, humanize_bytes=True):
         psutil_file = os.path.join(self.input_directory, 'w3af-psutil.data')
         logging.debug('Analyzing "%s" psutil dump' % psutil_file)
 
@@ -25,10 +25,10 @@ class SystemInformation(AnalysisPlugin):
             logging.error('File not found: "%s"' % psutil_file)
             return []
 
-        data = self.format_data(psutil_data)
+        data = self.format_data(psutil_data, humanize_bytes=humanize_bytes)
         return data
 
-    def format_data(self, psutil_data):
+    def format_data(self, psutil_data, humanize_bytes=True):
         data = []
 
         #
@@ -43,8 +43,12 @@ class SystemInformation(AnalysisPlugin):
         bytes_recv = psutil_data['Network']['eth0']['bytes_recv']
         bytes_sent = psutil_data['Network']['eth0']['bytes_sent']
 
-        bytes_recv = humanize.naturalsize(bytes_recv, gnu=True)
-        bytes_sent = humanize.naturalsize(bytes_sent, gnu=True)
+        if humanize_bytes:
+            bytes_recv = humanize.naturalsize(bytes_recv, gnu=True)
+            bytes_sent = humanize.naturalsize(bytes_sent, gnu=True)
+        else:
+            bytes_recv = bytes_recv / 1024 / 1024
+            bytes_sent = bytes_sent / 1024 / 1024
 
         data.append(('Network',
                      (('Bytes sent', bytes_sent),
@@ -62,6 +66,20 @@ class SystemInformation(AnalysisPlugin):
                 ('Pages per second (in)  (best: 0)', sout),)
         data.append(('Swap memory', swap))
         return data
+
+    def generate_graph_data(self):
+        """
+        :return: The data to use in the HTML graph
+        """
+        raw_data = self.analyze(humanize_bytes=False)
+        graph_data = {}
+
+        for measurement in raw_data:
+            if measurement[0] == 'Network':
+                graph_data['Network'] = [measurement[1][0][1],
+                                         measurement[1][1][1]]
+
+        return graph_data
 
     def get_output_name(self):
         return 'Operating System information'
