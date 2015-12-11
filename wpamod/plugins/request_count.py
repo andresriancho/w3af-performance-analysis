@@ -21,6 +21,12 @@ class HTTPRequestCount(AnalysisPlugin):
 
         return [('Total', requests)]
 
+    def generate_graph_data(self):
+        """
+        :return: The data to use in the HTML graph
+        """
+        return self.analyze()[0][1]
+
     def get_output_name(self):
         return 'HTTP requests sent'
 

@@ -129,17 +129,81 @@
                 };
 
                 var options = {
-                    multiTooltipTemplate: "<%=datasetLabel%> : <%= value %>",
+                    multiTooltipTemplate: "<%=datasetLabel%> : <%= value %> MB",
                     responsive: true,
                     scaleLabel: "<%=value%> MB"
                 };
 
                 // Get the context of the canvas element we want to select
                 var ctx = document.getElementById("PSUtilLineChart").getContext("2d");
-                var PSUtilLineChart = new Chart(ctx).Line(data);
+                var PSUtilLineChart = new Chart(ctx).Line(data, options);
 
                 // Legend
                 document.getElementById('PSUtilLineChart-legend').innerHTML = PSUtilLineChart.generateLegend();
+            </script>
+        </div>
+
+
+
+        <div class="row" id="network">
+            <div class="col-md-6 col-md-offset-2">
+                <h3>HTTP request count</h3>
+                <p>
+                    Total number of HTTP requests sent by each revision
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-2">
+                <canvas id="HTTPRequestBarChart" width="800" height="400"></canvas>
+            </div>
+            <div class="col-md-2">
+                <div id="HTTPRequestBarChart-legend" class="chart-legend"></div>
+            </div>
+
+            <script>
+                var colors = d3.scale.category10();
+
+                function get_nulled_data(length, index, value) {
+                    var nulled_data = [];
+
+                    for (var i = 0; i < length; i++) {
+                        nulled_data.push(null);
+                    }
+                    nulled_data[index] = value;
+                    return nulled_data;
+                }
+
+                var data = {
+                    labels: {{ collector_data.keys() }},
+                    datasets: [
+                        {% for revision in collector_data.keys() %}
+                            {
+                                label: "{{ revision }}",
+                                fillColor: convertHex(colors({{ loop.index }}), 20),
+                                strokeColor: colors({{ loop.index }}),
+                                pointColor: colors({{ loop.index }}),
+                                pointStrokeColor: "#fff",
+                                pointHighlightFill: "#fff",
+                                pointHighlightStroke: "rgba(220,220,220,1)",
+                                data: get_nulled_data({{ collector_data.keys()|length }}, {{ loop.index }} - 1, {{ collector_data[revision]['HTTP requests sent'] }})
+                            },
+                        {% endfor %}
+                    ]
+                };
+
+                var options = {
+                    multiTooltipTemplate: "<%=datasetLabel%> : <%= value %>",
+                    responsive: true,
+                    scaleLabel: "<%=value%> requests"
+                };
+
+                // Get the context of the canvas element we want to select
+                var ctx = document.getElementById("HTTPRequestBarChart").getContext("2d");
+                var HTTPRequestBarChart = new Chart(ctx).Bar(data, options);
+
+                // Legend
+                document.getElementById('HTTPRequestBarChart-legend').innerHTML = HTTPRequestBarChart.generateLegend();
             </script>
         </div>
     </body>

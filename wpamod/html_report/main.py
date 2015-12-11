@@ -36,7 +36,7 @@ PLUGINS = [
            #CoreStatus,
            PSUtilSummary,
            #SystemInformation,
-           #HTTPRequestCount,
+           HTTPRequestCount,
            #LogParser
 ]
 
@@ -101,7 +101,7 @@ def get_revision_date(revision):
     try:
         return subprocess.check_output(get_date_cmd,
                                        cwd=os.path.abspath('../w3af/'),
-                                       shell=True)
+                                       shell=True).strip()
     except:
         logging.debug('Failed to retrieve the revision date. No w3af git'
                       ' repository found at ../w3af/')
