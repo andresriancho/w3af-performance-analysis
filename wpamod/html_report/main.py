@@ -142,6 +142,15 @@ def process_directory(args, directory, collector_data):
         logging.error(msg % directory)
         sys.exit(-2)
 
+    try:
+        description_file = os.path.join(directory, 'config', 'description')
+        description = file(description_file).read().strip()
+    except IOError:
+        msg = ('%s is not a valid collector output directory (config/'
+               'description is missing).')
+        logging.error(msg % directory)
+        sys.exit(-3)
+
     #
     # Set unique revision id
     #
@@ -158,7 +167,8 @@ def process_directory(args, directory, collector_data):
     meta_data = {'directory': directory,
                  'revision': revision,
                  'revision-date': get_revision_date(revision),
-                 'collector-revision': collector_revision}
+                 'collector-revision': collector_revision,
+                 'description': description}
 
     collector_data[unique_revision]['meta-data'] = meta_data
 
