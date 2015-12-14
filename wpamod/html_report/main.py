@@ -33,7 +33,7 @@ PLUGINS = [
            #MeliaeUsageSummary,
            MeliaeLargestObject,
            #CPUUsageByFunction,
-           #CoreStatus,
+           CoreStatus,
            PSUtilSummary,
            SystemInformation,
            HTTPRequestCount,
@@ -60,6 +60,7 @@ def main():
                              trim_blocks=True,
                              lstrip_blocks=True)
     jinja2_env.globals['max_items_count'] = max_items_count
+    jinja2_env.globals['extract_partial_data'] = extract_partial_data
 
     template = file('wpamod/html_report/templates/report.html').read()
     template = jinja2_env.from_string(template)
@@ -89,6 +90,23 @@ def max_items_count(collector_data, plugin_name):
             max_items = current_items
 
     return range(max_items)
+
+
+def extract_partial_data(collector_data, revision, plugin_name, data_name):
+    """
+    :param collector_data: The data generated using process_directory
+    :param revision: The revision for which we need the data
+    :param plugin_name: The name of the plugin
+    :param data_name: The key name for the data inside the plugin
+    :return: A list with the data
+    """
+    output = []
+
+    for _id, data in collector_data[revision][plugin_name].iteritems():
+        data_point = data[data_name] if data[data_name] is not None else 0
+        output.append(data_point)
+
+    return output
 
 
 def get_revision_date(revision):

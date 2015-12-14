@@ -409,6 +409,215 @@
             </script>
         </div>
 
+        <div class="row">
+            <div class="col-md-6 col-md-offset-2">
+                <h3>Crawl Queue size</h3>
+                <p>
+                    Crawl input queue size as captured by w3af's internals.
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-2">
+                <canvas id="CrawlQueueSizeLineChart" width="800" height="400"></canvas>
+            </div>
+            <div class="col-md-2">
+                <div id="CrawlQueueSizeLineChart-legend" class="chart-legend"></div>
+            </div>
+
+            <script>
+                var colors = d3.scale.category10();
+
+                var data = {
+                    labels: {{ max_items_count(collector_data, 'Core status summary') }},
+                    datasets: [
+                        {% for revision in collector_data.keys() %}
+                            {
+                                label: "{{ revision }}",
+                                fillColor: convertHex(colors({{ loop.index }}), 20),
+                                strokeColor: colors({{ loop.index }}),
+                                pointColor: colors({{ loop.index }}),
+                                pointStrokeColor: "#fff",
+                                pointHighlightFill: "#fff",
+                                pointHighlightStroke: "rgba(220,220,220,1)",
+                                data: {{ extract_partial_data(collector_data, revision, 'Core status summary', 'Crawl worker pool input queue size') }}
+                            },
+                        {% endfor %}
+                    ]
+                };
+
+                var options = {
+                    multiTooltipTemplate: "<%=datasetLabel%> : <%= value %>",
+                    responsive: true,
+                    scaleLabel: "<%=value%>"
+                };
+
+                // Get the context of the canvas element we want to select
+                var ctx = document.getElementById("CrawlQueueSizeLineChart").getContext("2d");
+                var CrawlQueueSizeLineChart = new Chart(ctx).Line(data, options);
+
+                // Legend
+                document.getElementById('CrawlQueueSizeLineChart-legend').innerHTML = CrawlQueueSizeLineChart.generateLegend();
+            </script>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-6 col-md-offset-2">
+                <h3>Audit Queue size</h3>
+                <p>
+                    Audit input queue size as captured by w3af's internals.
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-2">
+                <canvas id="AuditQueueSizeLineChart" width="800" height="400"></canvas>
+            </div>
+            <div class="col-md-2">
+                <div id="AuditQueueSizeLineChart-legend" class="chart-legend"></div>
+            </div>
+
+            <script>
+                var colors = d3.scale.category10();
+
+                var data = {
+                    labels: {{ max_items_count(collector_data, 'Core status summary') }},
+                    datasets: [
+                        {% for revision in collector_data.keys() %}
+                            {
+                                label: "{{ revision }}",
+                                fillColor: convertHex(colors({{ loop.index }}), 20),
+                                strokeColor: colors({{ loop.index }}),
+                                pointColor: colors({{ loop.index }}),
+                                pointStrokeColor: "#fff",
+                                pointHighlightFill: "#fff",
+                                pointHighlightStroke: "rgba(220,220,220,1)",
+                                data: {{ extract_partial_data(collector_data, revision, 'Core status summary', 'Audit worker pool input queue size') }}
+                            },
+                        {% endfor %}
+                    ]
+                };
+
+                var options = {
+                    multiTooltipTemplate: "<%=datasetLabel%> : <%= value %>",
+                    responsive: true,
+                    scaleLabel: "<%=value%>"
+                };
+
+                // Get the context of the canvas element we want to select
+                var ctx = document.getElementById("AuditQueueSizeLineChart").getContext("2d");
+                var AuditQueueSizeLineChart = new Chart(ctx).Line(data, options);
+
+                // Legend
+                document.getElementById('AuditQueueSizeLineChart-legend').innerHTML = AuditQueueSizeLineChart.generateLegend();
+            </script>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-6 col-md-offset-2">
+                <h3>Core Worker Pool Queue size</h3>
+                <p>
+                    Core Worker Pool queue size as captured by w3af's internals.
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-2">
+                <canvas id="CoreWorkerQueueSizeLineChart" width="800" height="400"></canvas>
+            </div>
+            <div class="col-md-2">
+                <div id="CoreWorkerQueueSizeLineChart-legend" class="chart-legend"></div>
+            </div>
+
+            <script>
+                var colors = d3.scale.category10();
+
+                var data = {
+                    labels: {{ max_items_count(collector_data, 'Core status summary') }},
+                    datasets: [
+                        {% for revision in collector_data.keys() %}
+                            {
+                                label: "{{ revision }}",
+                                fillColor: convertHex(colors({{ loop.index }}), 20),
+                                strokeColor: colors({{ loop.index }}),
+                                pointColor: colors({{ loop.index }}),
+                                pointStrokeColor: "#fff",
+                                pointHighlightFill: "#fff",
+                                pointHighlightStroke: "rgba(220,220,220,1)",
+                                data: {{ extract_partial_data(collector_data, revision, 'Core status summary', 'Core worker pool input queue size') }}
+                            },
+                        {% endfor %}
+                    ]
+                };
+
+                var options = {
+                    multiTooltipTemplate: "<%=datasetLabel%> : <%= value %>",
+                    responsive: true,
+                    scaleLabel: "<%=value%>"
+                };
+
+                // Get the context of the canvas element we want to select
+                var ctx = document.getElementById("CoreWorkerQueueSizeLineChart").getContext("2d");
+                var CoreWorkerQueueSizeLineChart = new Chart(ctx).Line(data, options);
+
+                // Legend
+                document.getElementById('CoreWorkerQueueSizeLineChart-legend').innerHTML = CoreWorkerQueueSizeLineChart.generateLegend();
+            </script>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 col-md-offset-2">
+                <h3>Grep Queue size</h3>
+                <p>
+                    Grep queue size as captured by w3af's internals.
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-2">
+                <canvas id="GrepQueueSizeLineChart" width="800" height="400"></canvas>
+            </div>
+            <div class="col-md-2">
+                <div id="GrepQueueSizeLineChart-legend" class="chart-legend"></div>
+            </div>
+
+            <script>
+                var colors = d3.scale.category10();
+
+                var data = {
+                    labels: {{ max_items_count(collector_data, 'Core status summary') }},
+                    datasets: [
+                        {% for revision in collector_data.keys() %}
+                            {
+                                label: "{{ revision }}",
+                                fillColor: convertHex(colors({{ loop.index }}), 20),
+                                strokeColor: colors({{ loop.index }}),
+                                pointColor: colors({{ loop.index }}),
+                                pointStrokeColor: "#fff",
+                                pointHighlightFill: "#fff",
+                                pointHighlightStroke: "rgba(220,220,220,1)",
+                                data: {{ extract_partial_data(collector_data, revision, 'Core status summary', 'Grep input queue size') }}
+                            },
+                        {% endfor %}
+                    ]
+                };
+
+                var options = {
+                    multiTooltipTemplate: "<%=datasetLabel%> : <%= value %>",
+                    responsive: true,
+                    scaleLabel: "<%=value%>"
+                };
+
+                // Get the context of the canvas element we want to select
+                var ctx = document.getElementById("GrepQueueSizeLineChart").getContext("2d");
+                var GrepQueueSizeLineChart = new Chart(ctx).Line(data, options);
+
+                // Legend
+                document.getElementById('GrepQueueSizeLineChart-legend').innerHTML = GrepQueueSizeLineChart.generateLegend();
+            </script>
+        </div>
 
         <div class="row">
             <div class="col-md-6 col-md-offset-2">
@@ -489,7 +698,6 @@
             </script>
         </div>
 
-
         <div class="row" id="network">
             <div class="col-md-6 col-md-offset-2">
                 <h3>HTTP request count</h3>
@@ -540,6 +748,58 @@
 
                 // Legend
                 document.getElementById('HTTPRequestBarChart-legend').innerHTML = HTTPRequestBarChart.generateLegend();
+            </script>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 col-md-offset-2">
+                <h3>HTTP requests per minute</h3>
+                <p>
+                    Graph HTTP requests per minute as counted by w3af's internals.
+                </p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-2">
+                <canvas id="HTTPRequestPerMinuteLineChart" width="800" height="400"></canvas>
+            </div>
+            <div class="col-md-2">
+                <div id="HTTPRequestPerMinuteLineChart-legend" class="chart-legend"></div>
+            </div>
+
+            <script>
+                var colors = d3.scale.category10();
+
+                var data = {
+                    labels: {{ max_items_count(collector_data, 'Core status summary') }},
+                    datasets: [
+                        {% for revision in collector_data.keys() %}
+                            {
+                                label: "{{ revision }}",
+                                fillColor: convertHex(colors({{ loop.index }}), 20),
+                                strokeColor: colors({{ loop.index }}),
+                                pointColor: colors({{ loop.index }}),
+                                pointStrokeColor: "#fff",
+                                pointHighlightFill: "#fff",
+                                pointHighlightStroke: "rgba(220,220,220,1)",
+                                data: {{ extract_partial_data(collector_data, revision, 'Core status summary', 'Requests per minute') }}
+                            },
+                        {% endfor %}
+                    ]
+                };
+
+                var options = {
+                    multiTooltipTemplate: "<%=datasetLabel%> : <%= value %> requests/minute",
+                    responsive: true,
+                    scaleLabel: "<%=value%> requests/minute"
+                };
+
+                // Get the context of the canvas element we want to select
+                var ctx = document.getElementById("HTTPRequestPerMinuteLineChart").getContext("2d");
+                var HTTPRequestPerMinuteLineChart = new Chart(ctx).Line(data, options);
+
+                // Legend
+                document.getElementById('HTTPRequestPerMinuteLineChart-legend').innerHTML = HTTPRequestPerMinuteLineChart.generateLegend();
             </script>
         </div>
 

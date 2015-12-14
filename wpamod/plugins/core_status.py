@@ -4,12 +4,14 @@ import json
 
 from wpamod.plugins.base.analysis_plugin import AnalysisPlugin, SPEED_VERY_FAST
 
+REQUESTS_PER_MINUTE = 'Requests per minute'
+
 
 class CoreStatus(AnalysisPlugin):
 
     SPEED = SPEED_VERY_FAST
 
-    DATA_KEYS = {'Requests per minute', 'Crawl queue input speed',
+    DATA_KEYS = {REQUESTS_PER_MINUTE, 'Crawl queue input speed',
                  'Crawl queue output speed', 'Crawl queue size',
                  'Audit queue input speed', 'Audit queue output speed',
                  'Audit queue size'}
@@ -52,6 +54,20 @@ class CoreStatus(AnalysisPlugin):
             output.append(('Measurement #%s (%s)' % (i, dumpfname), core_stats))
 
         return output
+
+    def generate_graph_data(self):
+        """
+        :return: The data to use in the HTML graph
+        """
+        raw_data = self.analyze()
+        graph_data = {}
+
+        for measurement_id, data in raw_data:
+            key = int(measurement_id.split('#')[1].split(' ')[0])
+            values = data
+            graph_data[key] = dict(values)
+
+        return graph_data
 
     def get_output_name(self):
         return 'Core status summary'
