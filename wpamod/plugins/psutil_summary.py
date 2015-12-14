@@ -78,11 +78,12 @@ class PSUtilSummary(AnalysisPlugin):
         if not psutil_data['ps_mem']:
             logging.warning('No ps_mem dump in "%s"' % input_file)
         else:
-            for key, value in psutil_data['ps_mem'][0].items():
-                try:
-                    psutil_data['ps_mem'][0][key] = humanize.naturalsize(value * 1024)
-                except:
-                    continue
+            if humanize_bytes:
+                for key, value in psutil_data['ps_mem'][0].items():
+                    try:
+                        psutil_data['ps_mem'][0][key] = humanize.naturalsize(value * 1024)
+                    except:
+                        continue
 
             memory_usage.append(('Program memory by psmem',
                                  psutil_data['ps_mem'][0].items()))
