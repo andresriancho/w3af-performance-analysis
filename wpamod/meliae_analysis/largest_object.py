@@ -1,4 +1,4 @@
-DEFAULT_TYPES_IGNORE = ('frame', )
+DEFAULT_TYPES_IGNORE = ('frame', 'module')
 
 
 def largest_object(meliae_memory, top=20, ignore_types=DEFAULT_TYPES_IGNORE):
